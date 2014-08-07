@@ -17,7 +17,7 @@ help:
 	@echo "    help : Shows this help."
 
 check-convert-tool:
-	@which $(CONVERT) >/dev/null || ( echo "ERROR: '$(CONVERT)' tool must be installed." && exit 1)
+	@which $(CONVERT) >/dev/null 2>&1 || ( echo "ERROR: '$(CONVERT)' tool must be installed." && exit 1)
 
 .PHONY: clean
 
