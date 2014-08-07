@@ -33,6 +33,7 @@ help:
 	@echo "    make [target]"
 	@echo "Targets:"
 	@echo "     all : Builds the full site and/or update all files (default target)."
+	@echo "   index : Rebuilds the index (index.html)."
 	@echo "    help : Shows this help."
 
 check-convert-tool:
