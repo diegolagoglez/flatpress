@@ -1,9 +1,13 @@
 
-TOOL	:= "FlatPress"
-AUTHOR	:= "Diego Lago Gonzalez <diego.lago.gonzalez@gmail.com>"
-VERSION	:= "0.1"
+TOOL		:= "FlatPress"
+AUTHOR		:= "Diego Lago Gonzalez <diego.lago.gonzalez@gmail.com>"
+VERSION		:= "0.1"
 
-CONVERT	:= pandoc
+CONVERT		:= pandoc
+
+PUBLIC		:= ./public
+PRIVATE		:= ./private
+TEMPLATES	:= ./templates
 
 all: check-convert-tool
 
