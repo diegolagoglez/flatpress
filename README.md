@@ -37,6 +37,6 @@ Not yet.
 
 # Credits
 
-Created by [mailto:diego.lago.gonzalez@gmail.com](Diego Lago González)
+Created by [Diego Lago González](mailto:diego.lago.gonzalez@gmail.com)
 Version 0.1
 GPLv3 — 2014
