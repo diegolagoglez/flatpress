@@ -16,7 +16,7 @@ FILE_PATTERN	:= *.md
 
 DIR_TREE		:= $(shell find $(PRIVATE) -type d 2>/dev/null)
 SRCS			:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
-HTMLS			:= $(SRCS:%.md=%.html)
+HTMLS			:= $(SRCS:$(PRIVATE)/%.md=$(PUBLIC)/%.html)
 
 # TODO: Load site's specify config file (with a Makefile.config, for example).
 # That configuration should have: site title, site tag, and parts to generate.
@@ -47,8 +47,8 @@ test-dirs:
 check-convert-tool:
 	@which $(CONVERT) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT)' tool must be installed." && exit 1)
 
-%.html: %.md
-	@echo -n "Building '$@'... "
+$(PUBLIC)/%.html: $(PRIVATE)/%.md
+	@echo -n "Building '$@' from '$<'... "
 	@echo OK
 
 $(PUBLIC)/index.html: $(HTMLS)
