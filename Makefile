@@ -14,13 +14,16 @@ PRIVATE			:= ./private
 TEMPLATES		:= ./templates
 FILE_PATTERN	:= *.md
 
-SRCS			:= $(shell find $(PRIVATE) -type f -name $(FILE_PATTERN))
+DIR_TREE		:= $(shell find $(PRIVATE) -type d 2>/dev/null)
+SRCS			:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
 HTMLS			:= $(SRCS:%.md=%.html)
 
 # TODO: Load site's specify config file (with a Makefile.config, for example).
 # That configuration should have: site title, site tag, and parts to generate.
 
-all: message check-convert-tool $(HTMLS) index monthly-archive categories tags
+.PHONY: all message help test-dirs check-convert-tool
+
+all: message check-convert-tool test-dirs $(HTMLS) $(PUBLIC)/index.html monthly-archive categories tags
 	@echo Done.
 
 message:
@@ -36,14 +39,19 @@ help:
 	@echo "   index : Rebuilds the index (index.html)."
 	@echo "    help : Shows this help."
 
+test-dirs:
+	@test -d $(PRIVATE) || (echo "ERROR: Site contents directory ($(PRIVATE)) does not exists." && exit 1)
+	@test ! -d $(PUBLIC) && echo "Site generated contents directory ($(PUBLIC)) does not exist. Creating..." && mkdir -p $(PUBLIC) || true
+	@test ! -d $(TEMPLATES) && echo "WARNING: There are not templates."
+
 check-convert-tool:
-	@which $(CONVERT) >/dev/null 2>&1 || ( echo "ERROR: '$(CONVERT)' tool must be installed." && exit 1)
+	@which $(CONVERT) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT)' tool must be installed." && exit 1)
 
 %.html: %.md
 	@echo -n "Building '$@'... "
 	@echo OK
 
-index:
+$(PUBLIC)/index.html: $(HTMLS)
 	@echo "Regenerating 'index.html'..."
 
 monthly-archive:
