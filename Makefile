@@ -7,7 +7,7 @@ VERSION			:= "0.1"
 SITE_TITLE		:= \$$TITLE
 SITE_TAG		:= \$$TAG
 
-CONVERT			:= pandoc
+CONVERT_TOOL	:= pandoc
 
 PUBLIC			:= ./public
 PRIVATE			:= ./private
@@ -45,11 +45,11 @@ test-dirs:
 	@test ! -d $(TEMPLATES) && echo "WARNING: There are not templates."
 
 check-convert-tool:
-	@which $(CONVERT) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT)' tool must be installed." && exit 1)
+	@which $(CONVERT_TOOL) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT_TOOL)' tool must be installed." && exit 1)
 
 $(PUBLIC)/%.html: $(PRIVATE)/%.md
 	@echo -n "Building '$@' from '$<'... "
-	@$(CONVERT) --from=markdown_github --to=html5 --output $< $@
+	@$(CONVERT_TOOL) --from=markdown_github --to=html5 --output $< $@
 	@echo OK
 
 $(PUBLIC)/index.html: $(HTMLS)
