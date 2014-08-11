@@ -42,7 +42,7 @@ help:
 test-dirs:
 	@test -d $(PRIVATE) || (echo "ERROR: Site contents directory ($(PRIVATE)) does not exists." && exit 1)
 	@test ! -d $(PUBLIC) && echo "Site generated contents directory ($(PUBLIC)) does not exist. Creating..." && mkdir -p $(PUBLIC) || true
-	@test ! -d $(TEMPLATES) && echo "WARNING: There are not templates."
+	@test ! -d $(TEMPLATES) && echo "WARNING: There are not templates." || true
 
 check-convert-tool:
 	@which $(CONVERT_TOOL) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT_TOOL)' tool must be installed." && exit 1)
