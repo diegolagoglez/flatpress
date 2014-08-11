@@ -49,6 +49,7 @@ check-convert-tool:
 
 $(PUBLIC)/%.html: $(PRIVATE)/%.md
 	@echo -n "Building '$@' from '$<'... "
+	@$(CONVERT) --from=markdown_github --to=html5 --output $< $@
 	@echo OK
 
 $(PUBLIC)/index.html: $(HTMLS)
