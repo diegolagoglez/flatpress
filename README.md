@@ -15,7 +15,7 @@ With FlatPress you only have to write the contents of your site with the directo
 FlatPress needs this packages:
 
 * `make` to build the complete site.
-* `pandoc` to convert between MarkDown and HTML.
+* [`pandoc`](http://johnmacfarlane.net/pandoc/) to convert between MarkDown and HTML.
 * `git` (optional) to deploy the Makefile.
 
 # Deployment and usage
