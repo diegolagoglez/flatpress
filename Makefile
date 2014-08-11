@@ -1,5 +1,5 @@
 
-TOOL			:= "FlatPress"
+PROJECT			:= "FlatPress"
 AUTHOR			:= "Diego Lago Gonzalez <diego.lago.gonzalez@gmail.com>"
 VERSION			:= "0.1"
 
@@ -27,10 +27,10 @@ all: message check-convert-tool test-dirs $(HTMLS) $(PUBLIC)/index.html monthly-
 	@echo Done.
 
 message:
-	@echo "Building site '$(SITE_TITLE)' with $(TOOL)..."
+	@echo "Building site '$(SITE_TITLE)' with $(PROJECT)..."
 
 help:
-	@echo $(TOOL) $(VERSION) - $(AUTHOR)
+	@echo $(PROJECT) $(VERSION) - $(AUTHOR)
 	@echo "Really, really simple utility to build static Internet sites."
 	@echo "Usage:"
 	@echo "    make [target]"
