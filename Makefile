@@ -1,29 +1,36 @@
 
-PROJECT			:= "FlatPress"
-AUTHOR			:= "Diego Lago Gonzalez <diego.lago.gonzalez@gmail.com>"
-VERSION			:= "0.1"
+PROJECT				:= "FlatPress"
+AUTHOR				:= "Diego Lago Gonzalez <diego.lago.gonzalez@gmail.com>"
+VERSION				:= "0.1"
 
-CONVERT_TOOL	:= pandoc
-RM				:= rm -rf
+CONVERT_TOOL		:= pandoc
+RM					:= rm -rf
 
-PRIVATE_DIR		:= ./private
-CONTENTS_DIR	:= $(PRIVATE_DIR)/contents
-PUBLIC_DIR		:= ./public
-TEMPLATES_DIR	:= ./templates
-STATIC_DIR		:= ./static
+PRIVATE_DIR			:= ./private
+CONTENTS_DIR		:= $(PRIVATE_DIR)/contents
+PUBLIC_DIR			:= ./public
+TEMPLATES_DIR		:= ./templates
+STATIC_DIR			:= ./static
+CACHE_DIR			:= ./cache
 
-FILE_PATTERN	:= *.md
+DEFAULT_ART_DIR		:= art
+DEFAULT_SCRIPTS_DIR	:= scripts
+DEFAULT_STYLES_DIR	:= styles
 
-DIR_TREE		:= $(shell find $(CONTENTS_DIR) -type d 2>/dev/null)
-SRCS			:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
-HTMLS			:= $(SRCS:$(CONTENTS_DIR)/%.md=$(PUBLIC_DIR)/%.html)
+PAGES_DIR			:= pages
+
+FILE_PATTERN		:= *.md
+
+DIR_TREE			:= $(shell find $(CONTENTS_DIR) -type d 2>/dev/null)
+SRCS				:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
+HTMLS				:= $(SRCS:$(CONTENTS_DIR)/%.md=$(PUBLIC_DIR)/%.html)
 
 # Configuration overridable variables:
-FROM_FORMAT		:= markdown_github
-TO_FORMAT		:= html5
-SITE_TITLE		:= \$$TITLE
-SITE_TAG		:= \$$TAG
-PAGE_SIZE		:= 10
+FROM_FORMAT			:= markdown_github
+TO_FORMAT			:= html5
+SITE_TITLE			:= \$$TITLE
+SITE_TAG			:= \$$TAG
+PAGE_SIZE			:= 10
 
 # Include custom configuration.
 -include Makefile.config
@@ -32,7 +39,7 @@ PAGE_SIZE		:= 10
 
 .PHONY: all message help test-dirs check-convert-tool config
 
-all: message check-convert-tool test-dirs $(HTMLS) $(PUBLIC_DIR)/index.html monthly-archive categories tags
+all: message check-convert-tool test-dirs $(HTMLS) $(PUBLIC_DIR)/index.html static-resources-linkage monthly-archive categories tags
 	@echo Done.
 
 config:
@@ -64,6 +71,7 @@ test-dirs:
 	@test -d $(CONTENTS_DIR) || (echo "ERROR: Site contents directory ($(CONTENTS_DIR)) does not exists." && exit 1)
 	@test ! -d $(PUBLIC_DIR) && echo "Site generated contents directory ($(PUBLIC_DIR)) does not exist. Creating..." && mkdir -p $(PUBLIC_DIR) || true
 	@test ! -d $(TEMPLATES_DIR) && echo "WARNING: There are not templates." || true
+	@test ! -d $(CACHE_DIR) && echo "WARNING: There are not cache directory." || true
 
 check-convert-tool:
 	@which $(CONVERT_TOOL) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT_TOOL)' tool must be installed." && exit 1)
@@ -77,9 +85,14 @@ $(PUBLIC_DIR)/%.html: $(CONTENTS_DIR)/%.md
 $(PUBLIC_DIR)/index.html: $(HTMLS)
 	@echo "Regenerating 'index.html'..."
 
-.PHONY: index pages monthly-archive categories tags
+.PHONY: index static-resources-linkage pages monthly-archive categories tags
 
 index: $(PUBLIC_DIR)/index.html
+
+static-resources-linkage:
+	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_STYLES_DIR) && ln -s .$(STATIC_DIR)/$(DEFAULT_STYLES_DIR) $(PUBLIC_DIR)/$(DEFAULT_STYLES_DIR)
+	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_ART_DIR) && ln -s .$(STATIC_DIR)/$(DEFAULT_ART_DIR) $(PUBLIC_DIR)/$(DEFAULT_ART_DIR)
+	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR) && ln -s .$(STATIC_DIR)/$(DEFAULT_SCRIPTS_DIR) $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR)
 
 pages:
 	@echo "Generating pages..."
