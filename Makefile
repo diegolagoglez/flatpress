@@ -18,7 +18,7 @@ DIR_TREE		:= $(shell find $(CONTENTS_DIR) -type d 2>/dev/null)
 SRCS			:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
 HTMLS			:= $(SRCS:$(CONTENTS_DIR)/%.md=$(PUBLIC_DIR)/%.html)
 
-# Configuration overridable:
+# Configuration overridable variables:
 FROM_FORMAT		:= markdown_github
 TO_FORMAT		:= html5
 SITE_TITLE		:= \$$TITLE
