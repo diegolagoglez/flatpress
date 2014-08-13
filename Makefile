@@ -39,7 +39,7 @@ PAGE_SIZE			:= 10
 
 .PHONY: all message help test-dirs check-convert-tool config
 
-all: message check-convert-tool test-dirs $(HTMLS) monthly-archive categories tags $(PUBLIC_DIR)/index.html static-resources-links
+all: message check-convert-tool test-dirs static-resources-links $(HTMLS) monthly-archive categories tags $(PUBLIC_DIR)/index.html pages
 	@echo Done.
 
 config:
@@ -83,7 +83,7 @@ $(PUBLIC_DIR)/%.html: $(CONTENTS_DIR)/%.md
 	@echo OK
 
 $(PUBLIC_DIR)/index.html: $(HTMLS)
-	@echo "Regenerating 'index.html'..."
+	@echo "Regenerating index.html..."
 
 .PHONY: index static-resources-links pages monthly-archive categories tags
 
@@ -95,7 +95,7 @@ static-resources-links:
 	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR) && ln -s .$(STATIC_DIR)/$(DEFAULT_SCRIPTS_DIR) $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR) || true
 
 pages:
-	@echo "Generating pages..."
+	@echo "Regenerating pages..."
 
 monthly-archive:
 	@echo "Regenerating monthly archive..."
