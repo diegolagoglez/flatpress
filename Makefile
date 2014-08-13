@@ -16,14 +16,13 @@ SRCS			:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
 HTMLS			:= $(SRCS:$(PRIVATE_DIR)/%.md=$(PUBLIC_DIR)/%.html)
 
 # Configuration overridable:
-
 FROM_FORMAT		:= markdown_github
 TO_FORMAT		:= html5
 SITE_TITLE		:= \$$TITLE
 SITE_TAG		:= \$$TAG
 
-# TODO: Load site's specify config file (with a Makefile.config, for example).
-# That configuration should have: site title, site tag, and parts to generate.
+# Include custom configuration.
+-include Makefile.config
 
 .PHONY: all message help test-dirs check-convert-tool config
 
