@@ -66,7 +66,8 @@ check-convert-tool:
 
 $(PUBLIC_DIR)/%.html: $(CONTENTS_DIR)/%.md
 	@echo -n "Building '$@' from '$<'... "
-	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --output $< $@
+	@mkdir -p $(dir $@)
+	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --output $@ $<
 	@echo OK
 
 $(PUBLIC_DIR)/index.html: $(HTMLS)
