@@ -37,7 +37,7 @@ PAGE_SIZE			:= 10
 
 # Find files for the index.
 
-.PHONY: all message help test-dirs check-convert-tool config
+.PHONY: all message help test-dirs check-convert-tool config create-layout
 
 all: message check-convert-tool test-dirs static-resources-links $(HTMLS) monthly-archive categories tags $(PUBLIC_DIR)/index.html pages
 	@echo Done.
@@ -53,6 +53,11 @@ config:
 	@echo "SITE_TAG     = $(SITE_TAG)"
 	@echo "PAGE_SIZE    = $(PAGE_SIZE)"
 
+create-layout:
+	@echo -n "Creating basic directory layout for a new site... "
+	@mkdir -p $(PRIVATE_DIR) $(CONTENTS_DIR) $(PUBLIC_DIR) $(TEMPLATES_DIR) $(STATIC_DIR) $(STATIC_DIR)/$(DEFAULT_ART_DIR) $(STATIC_DIR)/$(DEFAULT_STYLES_DIR) $(STATIC_DIR)/$(DEFAULT_SCRIPTS_DIR) $(CACHE_DIR)
+	@echo OK.
+
 message:
 	@echo "Building site '$(SITE_TITLE)' with $(PROJECT)..."
 
@@ -62,10 +67,11 @@ help:
 	@echo "Usage:"
 	@echo "    make [target]"
 	@echo "Targets:"
-	@echo "     all : Builds the full site and/or update all files (default target)."
-	@echo "   index : Rebuilds the index (index.html)."
-	@echo "  config : Shows the values of the configurable variables."
-	@echo "    help : Shows this help."
+	@echo "          all : Builds the full site and/or update all files (default target)."
+	@echo "        index : Rebuilds the index (index.html)."
+	@echo "       config : Shows the values of the configurable variables."
+	@echo "create-layout : Creates the basic directory layout for a new site."
+	@echo "         help : Shows this help."
 
 test-dirs:
 	@test -d $(CONTENTS_DIR) || (echo "ERROR: Site contents directory ($(CONTENTS_DIR)) does not exists." && exit 1)
