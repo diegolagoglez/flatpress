@@ -90,9 +90,9 @@ $(PUBLIC_DIR)/index.html: $(HTMLS)
 index: $(PUBLIC_DIR)/index.html
 
 static-resources-linkage:
-	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_STYLES_DIR) && ln -s .$(STATIC_DIR)/$(DEFAULT_STYLES_DIR) $(PUBLIC_DIR)/$(DEFAULT_STYLES_DIR)
-	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_ART_DIR) && ln -s .$(STATIC_DIR)/$(DEFAULT_ART_DIR) $(PUBLIC_DIR)/$(DEFAULT_ART_DIR)
-	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR) && ln -s .$(STATIC_DIR)/$(DEFAULT_SCRIPTS_DIR) $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR)
+	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_STYLES_DIR) && ln -s .$(STATIC_DIR)/$(DEFAULT_STYLES_DIR) $(PUBLIC_DIR)/$(DEFAULT_STYLES_DIR) || true
+	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_ART_DIR) && ln -s .$(STATIC_DIR)/$(DEFAULT_ART_DIR) $(PUBLIC_DIR)/$(DEFAULT_ART_DIR) || true
+	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR) && ln -s .$(STATIC_DIR)/$(DEFAULT_SCRIPTS_DIR) $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR) || true
 
 pages:
 	@echo "Generating pages..."
