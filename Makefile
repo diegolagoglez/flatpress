@@ -4,17 +4,19 @@ AUTHOR			:= "Diego Lago Gonzalez <diego.lago.gonzalez@gmail.com>"
 VERSION			:= "0.1"
 
 CONVERT_TOOL	:= pandoc
+RM				:= rm -rf
 
-PUBLIC_DIR		:= ./public
 PRIVATE_DIR		:= ./private
+CONTENTS_DIR	:= $(PRIVATE_DIR)/contents
+PUBLIC_DIR		:= ./public
 TEMPLATES_DIR	:= ./templates
 STATIC_DIR		:= ./static
 
 FILE_PATTERN	:= *.md
 
-DIR_TREE		:= $(shell find $(PRIVATE_DIR) -type d 2>/dev/null)
+DIR_TREE		:= $(shell find $(CONTENTS_DIR) -type d 2>/dev/null)
 SRCS			:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
-HTMLS			:= $(SRCS:$(PRIVATE_DIR)/%.md=$(PUBLIC_DIR)/%.html)
+HTMLS			:= $(SRCS:$(CONTENTS_DIR)/%.md=$(PUBLIC_DIR)/%.html)
 
 # Configuration overridable:
 FROM_FORMAT		:= markdown_github
@@ -31,8 +33,9 @@ all: message check-convert-tool test-dirs $(HTMLS) $(PUBLIC_DIR)/index.html mont
 	@echo Done.
 
 config:
-	@echo "PUBLIC_DIR   = $(PUBLIC_DIR)"
 	@echo "PRIVATE_DIR  = $(PRIVATE_DIR)"
+	@echo "CONTENTS_DIR = $(CONTENTS_DIR)"
+	@echo "PUBLIC_DIR   = $(PUBLIC_DIR)"
 	@echo "CONVERT_TOOL = $(CONVERT_TOOL)"
 	@echo "FROM_FORMAT  = $(FROM_FORMAT)"
 	@echo "TO_FORMAT    = $(TO_FORMAT)"
@@ -54,14 +57,14 @@ help:
 	@echo "    help : Shows this help."
 
 test-dirs:
-	@test -d $(PRIVATE_DIR) || (echo "ERROR: Site contents directory ($(PRIVATE_DIR)) does not exists." && exit 1)
+	@test -d $(CONTENTS_DIR) || (echo "ERROR: Site contents directory ($(CONTENTS_DIR)) does not exists." && exit 1)
 	@test ! -d $(PUBLIC_DIR) && echo "Site generated contents directory ($(PUBLIC_DIR)) does not exist. Creating..." && mkdir -p $(PUBLIC_DIR) || true
 	@test ! -d $(TEMPLATES_DIR) && echo "WARNING: There are not templates." || true
 
 check-convert-tool:
 	@which $(CONVERT_TOOL) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT_TOOL)' tool must be installed." && exit 1)
 
-$(PUBLIC_DIR)/%.html: $(PRIVATE_DIR)/%.md
+$(PUBLIC_DIR)/%.html: $(CONTENTS_DIR)/%.md
 	@echo -n "Building '$@' from '$<'... "
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --output $< $@
 	@echo OK
@@ -85,4 +88,6 @@ tags:
 .PHONY: clean
 
 clean:
-	@echo "Cleaning site..."
+	@echo -n "Cleaning site... "
+	@$(RM) $(PUBLIC_DIR)/*
+	@echo OK.
