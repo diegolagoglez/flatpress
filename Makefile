@@ -23,6 +23,7 @@ FROM_FORMAT		:= markdown_github
 TO_FORMAT		:= html5
 SITE_TITLE		:= \$$TITLE
 SITE_TAG		:= \$$TAG
+PAGE_SIZE		:= 10
 
 # Include custom configuration.
 -include Makefile.config
@@ -41,6 +42,7 @@ config:
 	@echo "TO_FORMAT    = $(TO_FORMAT)"
 	@echo "SITE_TITLE   = $(SITE_TITLE)"
 	@echo "SITE_TAG     = $(SITE_TAG)"
+	@echo "PAGE_SIZE    = $(PAGE_SIZE)"
 
 message:
 	@echo "Building site '$(SITE_TITLE)' with $(PROJECT)..."
