@@ -22,7 +22,7 @@ FlatPress needs this packages:
 
 In order to deploy the first time a site built with FlatPress you have to follow the next steps:
 
-* Get/clone the [FlatPress respository](git clone https://github.com/diegolagoglez/flatpress.git).
+* Get/clone the [FlatPress respository](https://github.com/diegolagoglez/flatpress.git).
 * Create a directory to hold your site (for example at `/var/www/my-flatpress-site`).
 * Copy the `Makefile` into that directory.
 * Run `make create-layout` the create the basic directory layout of FlatPress.
