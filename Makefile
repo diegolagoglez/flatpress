@@ -90,6 +90,7 @@ $(PUBLIC_DIR)/%.html: $(CONTENTS_DIR)/%.md
 
 $(PUBLIC_DIR)/index.html: $(HTMLS)
 	@echo "Regenerating index.html..."
+	@touch $@
 
 .PHONY: index static-resources-links pages monthly-archive categories tags
 
