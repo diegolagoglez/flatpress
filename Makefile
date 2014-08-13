@@ -7,8 +7,9 @@ CONVERT_TOOL	:= pandoc
 
 PUBLIC_DIR		:= ./public
 PRIVATE_DIR		:= ./private
-TEMPLATES		:= ./templates
-static			:= ./static
+TEMPLATES_DIR	:= ./templates
+STATIC_DIR		:= ./static
+
 FILE_PATTERN	:= *.md
 
 DIR_TREE		:= $(shell find $(PRIVATE_DIR) -type d 2>/dev/null)
@@ -55,7 +56,7 @@ help:
 test-dirs:
 	@test -d $(PRIVATE_DIR) || (echo "ERROR: Site contents directory ($(PRIVATE_DIR)) does not exists." && exit 1)
 	@test ! -d $(PUBLIC_DIR) && echo "Site generated contents directory ($(PUBLIC_DIR)) does not exist. Creating..." && mkdir -p $(PUBLIC_DIR) || true
-	@test ! -d $(TEMPLATES) && echo "WARNING: There are not templates." || true
+	@test ! -d $(TEMPLATES_DIR) && echo "WARNING: There are not templates." || true
 
 check-convert-tool:
 	@which $(CONVERT_TOOL) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT_TOOL)' tool must be installed." && exit 1)
