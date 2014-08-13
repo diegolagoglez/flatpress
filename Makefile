@@ -28,6 +28,8 @@ PAGE_SIZE		:= 10
 # Include custom configuration.
 -include Makefile.config
 
+# Find files for the index.
+
 .PHONY: all message help test-dirs check-convert-tool config
 
 all: message check-convert-tool test-dirs $(HTMLS) $(PUBLIC_DIR)/index.html monthly-archive categories tags
@@ -75,9 +77,12 @@ $(PUBLIC_DIR)/%.html: $(CONTENTS_DIR)/%.md
 $(PUBLIC_DIR)/index.html: $(HTMLS)
 	@echo "Regenerating 'index.html'..."
 
-.PHONY: index
+.PHONY: index pages monthly-archive categories tags
 
 index: $(PUBLIC_DIR)/index.html
+
+pages:
+	@echo "Generating pages..."
 
 monthly-archive:
 	@echo "Regenerating monthly archive..."
