@@ -26,7 +26,7 @@ SRCS				:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
 HTMLS				:= $(SRCS:$(CONTENTS_DIR)/%.md=$(PUBLIC_DIR)/%.html)
 
 # Configuration overridable variables:
-FROM_FORMAT			:= markdown_github
+FROM_FORMAT			:= markdown
 TO_FORMAT			:= html5
 SITE_TITLE			:= \$$TITLE
 SITE_TAG			:= \$$TAG
