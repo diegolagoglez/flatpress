@@ -42,7 +42,7 @@ PAGE_SIZE			:= 10
 
 .PHONY: all message help test-dirs check-convert-tool config create-layout
 
-all: message check-convert-tool test-dirs static-resources-links $(HTMLS) monthly-archive categories tags $(PUBLIC_DIR)/index.html pages
+all: message check-convert-tool test-dirs static-resources-links $(HTMLS) $(PUBLIC_DIR)/index.html
 	@echo Done.
 
 config:
