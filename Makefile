@@ -25,6 +25,9 @@ DIR_TREE			:= $(shell find $(CONTENTS_DIR) -type d 2>/dev/null)
 SRCS				:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
 HTMLS				:= $(SRCS:$(CONTENTS_DIR)/%.md=$(PUBLIC_DIR)/%.html)
 
+# TODO: Limit file count in output to PAGE_SIZE (head -n $(PAGE_SIZE) outs one file per line).
+INDEX_HTMLS			:= $(shell find $(CONTENTS_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t)
+
 # Configuration overridable variables:
 FROM_FORMAT			:= markdown
 TO_FORMAT			:= html5
@@ -88,9 +91,9 @@ $(PUBLIC_DIR)/%.html: $(CONTENTS_DIR)/%.md
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --output $@ $<
 	@echo OK
 
-$(PUBLIC_DIR)/index.html: $(HTMLS)
+$(PUBLIC_DIR)/index.html: $(HTMLS) $(INDEX_HTMLS)
 	@echo "Regenerating index.html..."
-	@touch $@
+	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone --output $@ $(INDEX_HTMLS)
 
 .PHONY: index static-resources-links pages monthly-archive categories tags
 
