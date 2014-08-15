@@ -10,7 +10,7 @@ SITE_CONTENTS_DIR		:= ./site
 ARTICLES_DIR			:= $(SITE_CONTENTS_DIR)/articles
 PUBLIC_DIR				:= ./public
 TEMPLATES_DIR			:= ./templates
-STATIC_RESOURCES_DIR				:= $(SITE_CONTENTS_DIR)/static
+STATIC_RESOURCES_DIR	:= $(SITE_CONTENTS_DIR)/static
 CACHE_DIR				:= ./cache
 
 DEFAULT_TEMPLATE		:= $(TEMPLATES_DIR)/default.html
@@ -33,8 +33,8 @@ INDEX_HTMLS				:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -
 # Configuration overridable variables:
 FROM_FORMAT				:= markdown
 TO_FORMAT				:= html5
-SITE_TITLE				:= \$$TITLE
-SITE_TAG				:= \$$TAG
+SITE_TITLE				:= "Your site\'s title"
+SITE_TAG				:= "Your site\'s tag"
 PAGE_SIZE				:= 10
 PAGE_AUTHOR				:= $(AUTHOR)
 TEMPLATE				:= $(DEFAULT_TEMPLATE)
