@@ -99,12 +99,15 @@ check-convert-tool:
 $(PUBLIC_DIR)/%.html: $(CONTENTS_DIR)/%.md
 	@echo -n "Building '$@' from '$<'... "
 	@mkdir -p $(dir $@)
-	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone --template $(TEMPLATE) --output $@ $<
+	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone\
+		--template $(TEMPLATE) --output $@ $<
 	@echo OK
 
 $(PUBLIC_DIR)/index.html: $(HTMLS) $(INDEX_HTMLS)
-	@echo "Regenerating index.html..."
-	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone --template $(INDEX_TEMPLATE) --output $@ $(INDEX_HTMLS)
+	@echo -n "Regenerating index.html... "
+	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone\
+		--template $(INDEX_TEMPLATE) --section-divs --output $@ $(INDEX_HTMLS)
+	@echo OK
 
 .PHONY: index static-resources-links pages monthly-archive categories tags
 
