@@ -10,7 +10,7 @@ SITE_CONTENTS_DIR		:= ./site
 ARTICLES_DIR			:= $(SITE_CONTENTS_DIR)/articles
 PUBLIC_DIR				:= ./public
 TEMPLATES_DIR			:= ./templates
-STATIC_DIR				:= $(SITE_CONTENTS_DIR)/static
+STATIC_RESOURCES_DIR				:= $(SITE_CONTENTS_DIR)/static
 CACHE_DIR				:= ./cache
 
 DEFAULT_TEMPLATE		:= $(TEMPLATES_DIR)/default.html
@@ -54,24 +54,25 @@ all: message check-convert-tool test-dirs static-resources-links $(HTMLS) $(PUBL
 	@echo Done.
 
 config:
-	@echo "SITE_CONTENTS_DIR   = $(SITE_CONTENTS_DIR)"
-	@echo "ARTICLES_DIR        = $(ARTICLES_DIR)"
-	@echo "PUBLIC_DIR          = $(PUBLIC_DIR)"
-	@echo "DEFAULT_ART_DIR     = $(DEFAULT_ART_DIR)"
-	@echo "DEFAULT_STYLES_DIR  = $(DEFAULT_STYLES_DIR)"
-	@echo "DEFAULT_SCRIPTS_DIR = $(DEFAULT_SCRIPTS_DIR)"
-	@echo "FROM_FORMAT         = $(FROM_FORMAT)"
-	@echo "TO_FORMAT           = $(TO_FORMAT)"
-	@echo "SITE_TITLE          = $(SITE_TITLE)"
-	@echo "SITE_TAG            = $(SITE_TAG)"
-	@echo "PAGE_SIZE           = $(PAGE_SIZE)"
-	@echo 'PAGE_AUTHOR         = $(PAGE_AUTHOR)'
-	@echo "TEMPLATE            = $(TEMPLATE)"
-	@echo "INDEX_TEMPLATE      = $(INDEX_TEMPLATE)"
+	@echo "SITE_CONTENTS_DIR    = $(SITE_CONTENTS_DIR)"
+	@echo "ARTICLES_DIR         = $(ARTICLES_DIR)"
+	@echo "PUBLIC_DIR           = $(PUBLIC_DIR)"
+	@echo "STATIC_RESOURCES_DIR = $(STATIC_RESOURCES_DIR)"
+	@echo "DEFAULT_ART_DIR      = \$$(STATIC_RESOURCES_DIR)/$(DEFAULT_ART_DIR)"
+	@echo "DEFAULT_STYLES_DIR   = \$$(STATIC_RESOURCES_DIR)/$(DEFAULT_STYLES_DIR)"
+	@echo "DEFAULT_SCRIPTS_DIR  = \$$(STATIC_RESOURCES_DIR)/$(DEFAULT_SCRIPTS_DIR)"
+	@echo "FROM_FORMAT          = $(FROM_FORMAT)"
+	@echo "TO_FORMAT            = $(TO_FORMAT)"
+	@echo "SITE_TITLE           = $(SITE_TITLE)"
+	@echo "SITE_TAG             = $(SITE_TAG)"
+	@echo "PAGE_SIZE            = $(PAGE_SIZE)"
+	@echo 'PAGE_AUTHOR          = $(PAGE_AUTHOR)'
+	@echo "TEMPLATE             = $(TEMPLATE)"
+	@echo "INDEX_TEMPLATE       = $(INDEX_TEMPLATE)"
 
 create-layout:
 	@echo -n "Creating basic directory layout for a new site... "
-	@mkdir -p $(SITE_CONTENTS_DIR) $(ARTICLES_DIR) $(PUBLIC_DIR) $(TEMPLATES_DIR) $(STATIC_DIR) $(STATIC_DIR)/$(DEFAULT_ART_DIR) $(STATIC_DIR)/$(DEFAULT_STYLES_DIR) $(STATIC_DIR)/$(DEFAULT_SCRIPTS_DIR) $(CACHE_DIR)
+	@mkdir -p $(SITE_CONTENTS_DIR) $(ARTICLES_DIR) $(PUBLIC_DIR) $(TEMPLATES_DIR) $(STATIC_RESOURCES_DIR) $(STATIC_RESOURCES_DIR)/$(DEFAULT_ART_DIR) $(STATIC_RESOURCES_DIR)/$(DEFAULT_STYLES_DIR) $(STATIC_RESOURCES_DIR)/$(DEFAULT_SCRIPTS_DIR) $(CACHE_DIR)
 	@echo OK.
 
 message:
@@ -117,11 +118,11 @@ index: $(PUBLIC_DIR)/index.html
 
 static-resources-links:
 	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_STYLES_DIR) &&\
-		ln -s .$(STATIC_DIR)/$(DEFAULT_STYLES_DIR) $(PUBLIC_DIR)/$(DEFAULT_STYLES_DIR) || true
+		ln -s .$(STATIC_RESOURCES_DIR)/$(DEFAULT_STYLES_DIR) $(PUBLIC_DIR)/$(DEFAULT_STYLES_DIR) || true
 	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_ART_DIR) &&\
-		ln -s .$(STATIC_DIR)/$(DEFAULT_ART_DIR) $(PUBLIC_DIR)/$(DEFAULT_ART_DIR) || true
+		ln -s .$(STATIC_RESOURCES_DIR)/$(DEFAULT_ART_DIR) $(PUBLIC_DIR)/$(DEFAULT_ART_DIR) || true
 	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR) &&\
-		ln -s .$(STATIC_DIR)/$(DEFAULT_SCRIPTS_DIR) $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR) || true
+		ln -s .$(STATIC_RESOURCES_DIR)/$(DEFAULT_SCRIPTS_DIR) $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR) || true
 
 pages:
 	@echo "Regenerating pages..."
