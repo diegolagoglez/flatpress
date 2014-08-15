@@ -62,7 +62,7 @@ config:
 	@echo "SITE_TITLE        = $(SITE_TITLE)"
 	@echo "SITE_TAG          = $(SITE_TAG)"
 	@echo "PAGE_SIZE         = $(PAGE_SIZE)"
-	@echo "PAGE_AUTHOR       = $(PAGE_AUTHOR)"
+	@echo 'PAGE_AUTHOR       = $(PAGE_AUTHOR)'
 	@echo "TEMPLATE          = $(TEMPLATE)"
 	@echo "INDEX_TEMPLATE    = $(INDEX_TEMPLATE)"
 
