@@ -54,17 +54,20 @@ all: message check-convert-tool test-dirs static-resources-links $(HTMLS) $(PUBL
 	@echo Done.
 
 config:
-	@echo "SITE_CONTENTS_DIR = $(SITE_CONTENTS_DIR)"
-	@echo "ARTICLES_DIR      = $(ARTICLES_DIR)"
-	@echo "PUBLIC_DIR        = $(PUBLIC_DIR)"
-	@echo "FROM_FORMAT       = $(FROM_FORMAT)"
-	@echo "TO_FORMAT         = $(TO_FORMAT)"
-	@echo "SITE_TITLE        = $(SITE_TITLE)"
-	@echo "SITE_TAG          = $(SITE_TAG)"
-	@echo "PAGE_SIZE         = $(PAGE_SIZE)"
-	@echo 'PAGE_AUTHOR       = $(PAGE_AUTHOR)'
-	@echo "TEMPLATE          = $(TEMPLATE)"
-	@echo "INDEX_TEMPLATE    = $(INDEX_TEMPLATE)"
+	@echo "SITE_CONTENTS_DIR   = $(SITE_CONTENTS_DIR)"
+	@echo "ARTICLES_DIR        = $(ARTICLES_DIR)"
+	@echo "PUBLIC_DIR          = $(PUBLIC_DIR)"
+	@echo "DEFAULT_ART_DIR     = $(DEFAULT_ART_DIR)"
+	@echo "DEFAULT_STYLES_DIR  = $(DEFAULT_STYLES_DIR)"
+	@echo "DEFAULT_SCRIPTS_DIR = $(DEFAULT_SCRIPTS_DIR)"
+	@echo "FROM_FORMAT         = $(FROM_FORMAT)"
+	@echo "TO_FORMAT           = $(TO_FORMAT)"
+	@echo "SITE_TITLE          = $(SITE_TITLE)"
+	@echo "SITE_TAG            = $(SITE_TAG)"
+	@echo "PAGE_SIZE           = $(PAGE_SIZE)"
+	@echo 'PAGE_AUTHOR         = $(PAGE_AUTHOR)'
+	@echo "TEMPLATE            = $(TEMPLATE)"
+	@echo "INDEX_TEMPLATE      = $(INDEX_TEMPLATE)"
 
 create-layout:
 	@echo -n "Creating basic directory layout for a new site... "
