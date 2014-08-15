@@ -1,42 +1,50 @@
 
-PROJECT				:= "FlatPress"
-AUTHOR				:= "Diego Lago Gonzalez <diego.lago.gonzalez@gmail.com>"
-VERSION				:= "0.1"
+PROJECT					:= "FlatPress"
+AUTHOR					:= "Diego Lago Gonzalez <diego.lago.gonzalez@gmail.com>"
+VERSION					:= "0.1"
 
-CONVERT_TOOL		:= pandoc
-RM					:= rm -rf
+CONVERT_TOOL			:= pandoc
+RM						:= rm -rf
 
-PRIVATE_DIR			:= ./private
-CONTENTS_DIR		:= $(PRIVATE_DIR)/contents
-PUBLIC_DIR			:= ./public
-TEMPLATES_DIR		:= ./templates
-STATIC_DIR			:= ./static
-CACHE_DIR			:= ./cache
+PRIVATE_DIR				:= ./private
+CONTENTS_DIR			:= $(PRIVATE_DIR)/contents
+PUBLIC_DIR				:= ./public
+TEMPLATES_DIR			:= ./templates
+STATIC_DIR				:= ./static
+CACHE_DIR				:= ./cache
 
-DEFAULT_ART_DIR		:= art
-DEFAULT_SCRIPTS_DIR	:= scripts
-DEFAULT_STYLES_DIR	:= styles
+DEFAULT_TEMPLATE		:= $(TEMPLATES_DIR)/default.html
+DEFAULT_INDEX_TEMPLATE	:= $(TEMPLATES_DIR)/default-index.html
+DEFAULT_ART_DIR			:= art
+DEFAULT_SCRIPTS_DIR		:= scripts
+DEFAULT_STYLES_DIR		:= styles
 
-PAGES_DIR			:= pages
+PAGES_DIR				:= pages
 
-FILE_PATTERN		:= *.md
+FILE_PATTERN			:= *.md
 
-DIR_TREE			:= $(shell find $(CONTENTS_DIR) -type d 2>/dev/null)
-SRCS				:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
-HTMLS				:= $(SRCS:$(CONTENTS_DIR)/%.md=$(PUBLIC_DIR)/%.html)
+DIR_TREE				:= $(shell find $(CONTENTS_DIR) -type d 2>/dev/null)
+SRCS					:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
+HTMLS					:= $(SRCS:$(CONTENTS_DIR)/%.md=$(PUBLIC_DIR)/%.html)
 
 # TODO: Limit file count in output to PAGE_SIZE (head -n $(PAGE_SIZE) outs one file per line).
-INDEX_HTMLS			:= $(shell find $(CONTENTS_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t)
+INDEX_HTMLS				:= $(shell find $(CONTENTS_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t)
 
 # Configuration overridable variables:
-FROM_FORMAT			:= markdown
-TO_FORMAT			:= html5
-SITE_TITLE			:= \$$TITLE
-SITE_TAG			:= \$$TAG
-PAGE_SIZE			:= 10
+FROM_FORMAT				:= markdown
+TO_FORMAT				:= html5
+SITE_TITLE				:= \$$TITLE
+SITE_TAG				:= \$$TAG
+PAGE_SIZE				:= 10
+PAGE_AUTHOR				:= $(AUTHOR)
+TEMPLATE				:= $(DEFAULT_TEMPLATE)
+INDEX_TEMPLATE			:= $(DEFAULT_INDEX_TEMPLATE)
 
 # Include custom configuration.
 -include Makefile.config
+
+# Pandoc's variables.
+PANDOC_VARS			:=
 
 # Find files for the index.
 
@@ -46,15 +54,18 @@ all: message check-convert-tool test-dirs static-resources-links $(HTMLS) $(PUBL
 	@echo Done.
 
 config:
-	@echo "PRIVATE_DIR  = $(PRIVATE_DIR)"
-	@echo "CONTENTS_DIR = $(CONTENTS_DIR)"
-	@echo "PUBLIC_DIR   = $(PUBLIC_DIR)"
-	@echo "CONVERT_TOOL = $(CONVERT_TOOL)"
-	@echo "FROM_FORMAT  = $(FROM_FORMAT)"
-	@echo "TO_FORMAT    = $(TO_FORMAT)"
-	@echo "SITE_TITLE   = $(SITE_TITLE)"
-	@echo "SITE_TAG     = $(SITE_TAG)"
-	@echo "PAGE_SIZE    = $(PAGE_SIZE)"
+	@echo "PRIVATE_DIR    = $(PRIVATE_DIR)"
+	@echo "CONTENTS_DIR   = $(CONTENTS_DIR)"
+	@echo "PUBLIC_DIR     = $(PUBLIC_DIR)"
+	@echo "CONVERT_TOOL   = $(CONVERT_TOOL)"
+	@echo "FROM_FORMAT    = $(FROM_FORMAT)"
+	@echo "TO_FORMAT      = $(TO_FORMAT)"
+	@echo "SITE_TITLE     = $(SITE_TITLE)"
+	@echo "SITE_TAG       = $(SITE_TAG)"
+	@echo "PAGE_SIZE      = $(PAGE_SIZE)"
+	@echo "PAGE_AUTHOR    = $(PAGE_AUTHOR)"
+	@echo "TEMPLATE       = $(TEMPLATE)"
+	@echo "INDEX_TEMPLATE = $(INDEX_TEMPLATE)"
 
 create-layout:
 	@echo -n "Creating basic directory layout for a new site... "
@@ -88,12 +99,12 @@ check-convert-tool:
 $(PUBLIC_DIR)/%.html: $(CONTENTS_DIR)/%.md
 	@echo -n "Building '$@' from '$<'... "
 	@mkdir -p $(dir $@)
-	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone --output $@ $<
+	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone --template $(TEMPLATE) --output $@ $<
 	@echo OK
 
 $(PUBLIC_DIR)/index.html: $(HTMLS) $(INDEX_HTMLS)
 	@echo "Regenerating index.html..."
-	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone --output $@ $(INDEX_HTMLS)
+	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone --template $(INDEX_TEMPLATE) --output $@ $(INDEX_HTMLS)
 
 .PHONY: index static-resources-links pages monthly-archive categories tags
 
