@@ -62,19 +62,19 @@ config:
 	@echo "DEFAULT_ART_DIR      = \$$(STATIC_RESOURCES_DIR)/$(DEFAULT_ART_DIR)"
 	@echo "DEFAULT_STYLES_DIR   = \$$(STATIC_RESOURCES_DIR)/$(DEFAULT_STYLES_DIR)"
 	@echo "DEFAULT_SCRIPTS_DIR  = \$$(STATIC_RESOURCES_DIR)/$(DEFAULT_SCRIPTS_DIR)"
+	@echo "TEMPLATE             = $(TEMPLATE)"
+	@echo "INDEX_TEMPLATE       = $(INDEX_TEMPLATE)"
 	@echo "FROM_FORMAT          = $(FROM_FORMAT)"
 	@echo "TO_FORMAT            = $(TO_FORMAT)"
 	@echo "SITE_TITLE           = $(SITE_TITLE)"
 	@echo "SITE_TAG             = $(SITE_TAG)"
 	@echo "PAGE_SIZE            = $(PAGE_SIZE)"
 	@echo 'PAGE_AUTHOR          = $(PAGE_AUTHOR)'
-	@echo "TEMPLATE             = $(TEMPLATE)"
-	@echo "INDEX_TEMPLATE       = $(INDEX_TEMPLATE)"
 
 create-layout:
 	@echo -n "Creating basic directory layout for a new site... "
-	@mkdir -p $(SITE_CONTENTS_DIR) $(ARTICLES_DIR) $(PUBLIC_DIR) $(CACHE_DIR)\
-		$(TEMPLATES_DIR) $(STATIC_RESOURCES_DIR)\
+	@mkdir -p $(SITE_CONTENTS_DIR) $(ARTICLES_DIR) $(PUBLIC_DIR)\
+		$(CACHE_DIR) $(STATIC_RESOURCES_DIR)\
 		$(STATIC_RESOURCES_DIR)/$(DEFAULT_ART_DIR)\
 		$(STATIC_RESOURCES_DIR)/$(DEFAULT_STYLES_DIR)\
 		$(STATIC_RESOURCES_DIR)/$(DEFAULT_SCRIPTS_DIR)
@@ -118,7 +118,7 @@ $(PUBLIC_DIR)/index.html: $(HTMLS) $(INDEX_HTMLS)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		$(PANDOC_VARS) --template $(INDEX_TEMPLATE) --section-divs \
 		--output $@ $(INDEX_HTMLS)
-# Change <section> with <article> in index.html.
+# Replace <section> with <article> in index.html.
 	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
 	@echo OK
 
