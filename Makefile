@@ -115,8 +115,11 @@ $(PUBLIC_DIR)/%.html: $(ARTICLES_DIR)/%.md
 
 $(PUBLIC_DIR)/index.html: $(HTMLS) $(INDEX_HTMLS)
 	@echo -n "Regenerating index.html... "
-	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone\
-		--template $(INDEX_TEMPLATE) --section-divs --output $@ $(INDEX_HTMLS)
+	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
+		$(PANDOC_VARS) --template $(INDEX_TEMPLATE) --section-divs \
+		--output $@ $(INDEX_HTMLS)
+# Change <section> with <article> in index.html.
+	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
 	@echo OK
 
 .PHONY: index static-resources-links pages monthly-archive categories tags
