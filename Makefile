@@ -34,8 +34,8 @@ INDEX_HTMLS				:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -
 # Configuration overridable variables:
 FROM_FORMAT				:= markdown
 TO_FORMAT				:= html5
-SITE_TITLE				:= "Your site\'s title"
-SITE_TAG				:= "Your site\'s tag"
+SITE_TITLE				:= Your site's title
+SITE_TAG				:= Your site's tag
 PAGE_SIZE				:= 10
 PAGE_AUTHOR				:= $(AUTHOR)
 TEMPLATE				:= $(DEFAULT_TEMPLATE)
@@ -45,7 +45,7 @@ INDEX_TEMPLATE			:= $(DEFAULT_INDEX_TEMPLATE)
 -include Makefile.config
 
 # Pandoc's variables.
-PANDOC_VARS			:=
+PANDOC_VARS			:= -V site-title:"$(SITE_TITLE)" -V site-tag:"$(SITE_TAG)"
 
 # Find files for the index.
 
@@ -108,8 +108,9 @@ $(PUBLIC_DIR)/%.html: $(ARTICLES_DIR)/%.md
 	@echo -n "Building '$@' from '$<'... "
 	$(eval doctitle := $(shell $(BIN_DIR)/doctitle $<))
 	@mkdir -p $(dir $@)
-	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone\
-		--template $(TEMPLATE) --output $@ $<
+	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
+		--template $(TEMPLATE) --variable title:"$(doctitle)" \
+		$(PANDOC_VARS) --output $@ $<
 	@echo OK
 
 $(PUBLIC_DIR)/index.html: $(HTMLS) $(INDEX_HTMLS)
