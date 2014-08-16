@@ -6,6 +6,7 @@ VERSION					:= "0.1"
 CONVERT_TOOL			:= pandoc
 RM						:= rm -rf
 
+BIN_DIR					:= ./bin
 SITE_CONTENTS_DIR		:= ./site
 ARTICLES_DIR			:= $(SITE_CONTENTS_DIR)/articles
 PUBLIC_DIR				:= ./public
@@ -105,6 +106,7 @@ check-convert-tool:
 
 $(PUBLIC_DIR)/%.html: $(ARTICLES_DIR)/%.md
 	@echo -n "Building '$@' from '$<'... "
+	$(eval doctitle := $(shell $(BIN_DIR)/doctitle $<))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone\
 		--template $(TEMPLATE) --output $@ $<
