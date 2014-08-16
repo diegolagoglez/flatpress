@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [ -f "$1" ]; then
+	doctitle=$(grep '.' "$1" | head -n 1 | sed -r 's/^(\s*)#(\s*)(.*)$/\3/')
+	sed -r 's/\s*#$//' <<< $doctitle
+fi
