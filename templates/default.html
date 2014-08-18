@@ -2,6 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta name="generator" content="FlatPress">
 $for(author-meta)$
 	<meta name="author" content="$author-meta$">
 $endfor$
@@ -9,6 +10,9 @@ $if(date-meta)$
 	<meta name="dcterms.date" content="$date-meta$">
 $endif$
 	<title>$title$ — $site-title$</title>
+$for(css)$
+	<link rel="stylesheet" type="text/css" href="$css$">
+$endfor$
 $for(header-includes)$
 $header-includes$
 $endfor$
@@ -24,7 +28,7 @@ $endfor$
 		$endif$
 	</header>
 	<main>
-		$body$
+$body$
 	</main>
 $for(include-after)$
 $include-after$
