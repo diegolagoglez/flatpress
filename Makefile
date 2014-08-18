@@ -28,9 +28,6 @@ DIR_TREE				:= $(shell find $(ARTICLES_DIR) -type d 2>/dev/null)
 SRCS					:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
 HTMLS					:= $(SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)/%.html)
 
-# TODO: Limit file count in output to PAGE_SIZE (head -n $(PAGE_SIZE) outs one file per line).
-INDEX_HTMLS				:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t)
-
 # Configuration overridable variables:
 FROM_FORMAT				:= markdown
 TO_FORMAT				:= html5
@@ -43,6 +40,9 @@ INDEX_TEMPLATE			:= $(DEFAULT_INDEX_TEMPLATE)
 
 # Include custom configuration.
 -include Makefile.config
+
+# TODO: Limit file count in output to PAGE_SIZE (head -n $(PAGE_SIZE) outs one file per line).
+INDEX_HTMLS				:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
 
 # Pandoc's variables.
 PANDOC_VARS			:= -V site-title:"$(SITE_TITLE)" -V site-tag:"$(SITE_TAG)"
@@ -113,7 +113,7 @@ $(PUBLIC_DIR)/%.html: $(ARTICLES_DIR)/%.md
 		$(PANDOC_VARS) --output $@ $<
 	@echo OK
 
-$(PUBLIC_DIR)/index.html: $(HTMLS) $(INDEX_HTMLS)
+$(PUBLIC_DIR)/index.html: $(INDEX_HTMLS)
 	@echo -n "Regenerating index.html... "
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		$(PANDOC_VARS) --template $(INDEX_TEMPLATE) --section-divs \
