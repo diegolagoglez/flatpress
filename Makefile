@@ -45,7 +45,7 @@ INDEX_TEMPLATE			:= $(DEFAULT_INDEX_TEMPLATE)
 INDEX_HTMLS				:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
 
 # Pandoc's variables.
-PANDOC_VARS			:= -V site-title:"$(SITE_TITLE)" -V site-tag:"$(SITE_TAG)"
+PANDOC_VARS			:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"
 
 # Find files for the index.
 
@@ -109,7 +109,7 @@ $(PUBLIC_DIR)/%.html: $(ARTICLES_DIR)/%.md
 	$(eval doctitle := $(shell $(BIN_DIR)/doctitle $<))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
-		--template $(TEMPLATE) --variable title:"$(doctitle)" \
+		--template $(TEMPLATE) --variable title="$(doctitle)" \
 		$(PANDOC_VARS) --output $@ $<
 	@echo OK
 
