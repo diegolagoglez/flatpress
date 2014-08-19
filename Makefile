@@ -21,8 +21,6 @@ DEFAULT_ART_DIR			:= art
 DEFAULT_SCRIPTS_DIR		:= scripts
 DEFAULT_STYLES_DIR		:= styles
 
-PAGES_DIR				:= pages
-
 FILE_PATTERN			:= *.md
 
 ARTICLES_DIR_TREE		:= $(shell find $(ARTICLES_DIR) -type d 2>/dev/null)
@@ -48,7 +46,7 @@ PAGE_PREFIX				:=
 
 # The articles with their prefix (if there is one).
 ARTICLES				:= $(ARTICLES_SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html)
-PAGES_DIR				:= $()
+PAGES					:= $(PAGES_SRCS:$(PAGES_DIR)/%.md=$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html)
 
 # TODO: Limit file count in output to PAGE_SIZE (head -n $(PAGE_SIZE) outs one file per line).
 INDEX_ARTICLES				:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
@@ -60,7 +58,7 @@ PANDOC_VARS			:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SI
 
 .PHONY: all message help test-dirs check-convert-tool config create-layout
 
-all: message check-convert-tool test-dirs static-resources-links $(ARTICLES) $(PUBLIC_DIR)/index.html
+all: message check-convert-tool test-dirs static-resources-links $(PAGES) $(ARTICLES) $(PUBLIC_DIR)/index.html
 	@echo Done.
 
 config:
@@ -154,9 +152,6 @@ static-resources-links:
 		ln -s .$(STATIC_RESOURCES_DIR)/$(DEFAULT_ART_DIR) $(PUBLIC_DIR)/$(DEFAULT_ART_DIR) || true
 	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR) &&\
 		ln -s .$(STATIC_RESOURCES_DIR)/$(DEFAULT_SCRIPTS_DIR) $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR) || true
-
-pages:
-	@echo "Regenerating pages..."
 
 monthly-archive:
 	@echo "Regenerating monthly archive..."
