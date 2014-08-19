@@ -43,10 +43,10 @@ PAGE_PREFIX				:=
 -include Makefile.config
 
 # The articles with their prefix (if there is one).
-HTMLS					:= $(SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html)
+ARTICLES					:= $(SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html)
 
 # TODO: Limit file count in output to PAGE_SIZE (head -n $(PAGE_SIZE) outs one file per line).
-INDEX_HTMLS				:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
+INDEX_ARTICLES				:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
 
 # Pandoc's variables.
 PANDOC_VARS			:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"
@@ -55,7 +55,7 @@ PANDOC_VARS			:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SI
 
 .PHONY: all message help test-dirs check-convert-tool config create-layout
 
-all: message check-convert-tool test-dirs static-resources-links $(HTMLS) $(PUBLIC_DIR)/index.html
+all: message check-convert-tool test-dirs static-resources-links $(ARTICLES) $(PUBLIC_DIR)/index.html
 	@echo Done.
 
 config:
@@ -119,11 +119,11 @@ $(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md
 		$(PANDOC_VARS) --output $@ $<
 	@echo OK
 
-$(PUBLIC_DIR)/index.html: $(INDEX_HTMLS)
+$(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES)
 	@echo -n "Regenerating index.html... "
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		$(PANDOC_VARS) --template $(INDEX_TEMPLATE) --section-divs \
-		--output $@ $(INDEX_HTMLS)
+		--output $@ $(INDEX_ARTICLES)
 # Replace <section> with <article> in index.html.
 	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
 	@echo OK
