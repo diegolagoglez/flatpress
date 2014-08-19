@@ -114,7 +114,7 @@ test-dirs:
 check-convert-tool:
 	@which $(CONVERT_TOOL) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT_TOOL)' tool must be installed." && exit 1)
 
-$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md
+$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(TEMPLATE)
 	@echo -n "Building article '$@' from '$<'... "
 	$(eval doctitle := $(shell $(BIN_DIR)/doctitle $<))
 	@mkdir -p $(dir $@)
@@ -123,7 +123,7 @@ $(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md
 		$(PANDOC_VARS) --output $@ $<
 	@echo OK
 
-$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md
+$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(TEMPLATE)
 	@echo -n "Building page '$@' from '$<'... "
 	$(eval doctitle := $(shell $(BIN_DIR)/doctitle $<))
 	@mkdir -p $(dir $@)
@@ -132,7 +132,7 @@ $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md
 		$(PANDOC_VARS) --output $@ $<
 	@echo OK
 
-$(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES)
+$(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES) $(INDEX_TEMPLATE)
 	@echo -n "Regenerating index.html... "
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		$(PANDOC_VARS) --template $(INDEX_TEMPLATE) --section-divs \
@@ -141,7 +141,7 @@ $(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES)
 	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
 	@echo OK
 
-.PHONY: index static-resources-links pages monthly-archive categories tags
+.PHONY: index static-resources-links monthly-archive categories tags
 
 index: $(PUBLIC_DIR)/index.html
 
