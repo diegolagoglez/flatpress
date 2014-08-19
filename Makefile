@@ -26,7 +26,6 @@ FILE_PATTERN			:= *.md
 
 DIR_TREE				:= $(shell find $(ARTICLES_DIR) -type d 2>/dev/null)
 SRCS					:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
-HTMLS					:= $(SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)/%.html)
 
 # Configuration overridable variables:
 FROM_FORMAT				:= markdown
@@ -37,9 +36,14 @@ PAGE_SIZE				:= 10
 PAGE_AUTHOR				:= $(AUTHOR)
 TEMPLATE				:= $(DEFAULT_TEMPLATE)
 INDEX_TEMPLATE			:= $(DEFAULT_INDEX_TEMPLATE)
+ARTICLES_PREFIX			:= /article
+PAGE_PREFIX				:=
 
 # Include custom configuration.
 -include Makefile.config
+
+# The articles with their prefix (if there is one).
+HTMLS					:= $(SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html)
 
 # TODO: Limit file count in output to PAGE_SIZE (head -n $(PAGE_SIZE) outs one file per line).
 INDEX_HTMLS				:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
@@ -70,6 +74,8 @@ config:
 	@echo "SITE_TAG             = $(SITE_TAG)"
 	@echo "PAGE_SIZE            = $(PAGE_SIZE)"
 	@echo 'PAGE_AUTHOR          = $(PAGE_AUTHOR)'
+	@echo 'ARTICLES_PREFIX      = $(ARTICLES_PREFIX)'
+	@echo 'PAGE_PREFIX          = $(PAGE_PREFIX)'
 
 create-layout:
 	@echo -n "Creating basic directory layout for a new site... "
@@ -104,7 +110,7 @@ test-dirs:
 check-convert-tool:
 	@which $(CONVERT_TOOL) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT_TOOL)' tool must be installed." && exit 1)
 
-$(PUBLIC_DIR)/%.html: $(ARTICLES_DIR)/%.md
+$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md
 	@echo -n "Building '$@' from '$<'... "
 	$(eval doctitle := $(shell $(BIN_DIR)/doctitle $<))
 	@mkdir -p $(dir $@)
