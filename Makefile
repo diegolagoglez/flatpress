@@ -83,8 +83,8 @@ config:
 
 create-layout:
 	@echo -n "Creating basic directory layout for a new site... "
-	@mkdir -p $(SITE_CONTENTS_DIR) $(ARTICLES_DIR) $(PUBLIC_DIR)\
-		$(CACHE_DIR) $(STATIC_RESOURCES_DIR)\
+	@mkdir -p $(SITE_CONTENTS_DIR) $(PAGES_DIR) $(ARTICLES_DIR)\
+		$(PUBLIC_DIR) $(CACHE_DIR) $(STATIC_RESOURCES_DIR)\
 		$(STATIC_RESOURCES_DIR)/$(DEFAULT_ART_DIR)\
 		$(STATIC_RESOURCES_DIR)/$(DEFAULT_STYLES_DIR)\
 		$(STATIC_RESOURCES_DIR)/$(DEFAULT_SCRIPTS_DIR)
