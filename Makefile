@@ -9,6 +9,7 @@ RM						:= rm -rf
 BIN_DIR					:= ./bin
 SITE_CONTENTS_DIR		:= ./site
 ARTICLES_DIR			:= $(SITE_CONTENTS_DIR)/articles
+PAGES_DIR				:= $(SITE_CONTENTS_DIR)/pages
 PUBLIC_DIR				:= ./public
 TEMPLATES_DIR			:= ./templates
 STATIC_RESOURCES_DIR	:= $(SITE_CONTENTS_DIR)/static
@@ -24,8 +25,11 @@ PAGES_DIR				:= pages
 
 FILE_PATTERN			:= *.md
 
-DIR_TREE				:= $(shell find $(ARTICLES_DIR) -type d 2>/dev/null)
-SRCS					:= $(foreach dir, $(DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
+ARTICLES_DIR_TREE		:= $(shell find $(ARTICLES_DIR) -type d 2>/dev/null)
+ARTICLES_SRCS			:= $(foreach dir, $(ARTICLES_DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
+
+PAGES_DIR_TREE			:= $(shell find $(PAGES_DIR) -type d 2>/dev/null)
+PAGES_SRCS				:= $(foreach dir, $(PAGES_DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
 
 # Configuration overridable variables:
 FROM_FORMAT				:= markdown
@@ -43,7 +47,8 @@ PAGE_PREFIX				:=
 -include Makefile.config
 
 # The articles with their prefix (if there is one).
-ARTICLES					:= $(SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html)
+ARTICLES				:= $(ARTICLES_SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html)
+PAGES_DIR				:= $()
 
 # TODO: Limit file count in output to PAGE_SIZE (head -n $(PAGE_SIZE) outs one file per line).
 INDEX_ARTICLES				:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
@@ -61,6 +66,7 @@ all: message check-convert-tool test-dirs static-resources-links $(ARTICLES) $(P
 config:
 	@echo "SITE_CONTENTS_DIR    = $(SITE_CONTENTS_DIR)"
 	@echo "ARTICLES_DIR         = $(ARTICLES_DIR)"
+	@echo "PAGES_DIR            = $(PAGES_DIR)"
 	@echo "PUBLIC_DIR           = $(PUBLIC_DIR)"
 	@echo "STATIC_RESOURCES_DIR = $(STATIC_RESOURCES_DIR)"
 	@echo "DEFAULT_ART_DIR      = \$$(STATIC_RESOURCES_DIR)/$(DEFAULT_ART_DIR)"
@@ -111,7 +117,16 @@ check-convert-tool:
 	@which $(CONVERT_TOOL) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT_TOOL)' tool must be installed." && exit 1)
 
 $(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md
-	@echo -n "Building '$@' from '$<'... "
+	@echo -n "Building article '$@' from '$<'... "
+	$(eval doctitle := $(shell $(BIN_DIR)/doctitle $<))
+	@mkdir -p $(dir $@)
+	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
+		--template $(TEMPLATE) --variable title="$(doctitle)" \
+		$(PANDOC_VARS) --output $@ $<
+	@echo OK
+
+$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md
+	@echo -n "Building page '$@' from '$<'... "
 	$(eval doctitle := $(shell $(BIN_DIR)/doctitle $<))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
