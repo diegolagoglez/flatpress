@@ -54,11 +54,15 @@ INDEX_ARTICLES				:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)
 # Pandoc's variables.
 PANDOC_VARS			:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"
 
+# Stats.
+PAGE_COUNT		:= 0
+ARTICLE_COUNT	:= 0
+
 # Find files for the index.
 
 .PHONY: all message help test-dirs check-convert-tool config layout
 
-all: message check-convert-tool test-dirs static-resources-links $(PAGES) $(ARTICLES) $(PUBLIC_DIR)/index.html
+all: message check-convert-tool test-dirs static-resources-links $(PAGES) $(ARTICLES) $(PUBLIC_DIR)/index.html stats
 
 config:
 	@echo "SITE_CONTENTS_DIR    = $(SITE_CONTENTS_DIR)"
@@ -121,6 +125,7 @@ $(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(TEMPLATE)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(TEMPLATE) --variable title="$(doctitle)" \
 		$(PANDOC_VARS) --output $@ $<
+	$(eval ARTICLE_COUNT := $(shell expr $(ARTICLE_COUNT) + 1))
 
 $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(TEMPLATE)
 	$(eval url := $(shell echo $@ | sed 's/^public//'))
@@ -130,6 +135,7 @@ $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(TEMPLATE)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(TEMPLATE) --variable title="$(doctitle)" \
 		$(PANDOC_VARS) --output $@ $<
+	$(eval PAGE_COUNT := $(shell expr $(PAGE_COUNT) + 1))
 
 $(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES) $(INDEX_TEMPLATE)
 	@echo "  HTML    index.html"
@@ -160,7 +166,10 @@ categories:
 tags:
 	@echo "Regenerating tags..."
 
-.PHONY: clean
+.PHONY: clean stats
+
+stats:
+	@echo "  STATS   $(PAGE_COUNT) pages, $(ARTICLE_COUNT) articles"
 
 clean:
 	@echo "  CLEAN"
