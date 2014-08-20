@@ -56,7 +56,7 @@ PANDOC_VARS			:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SI
 
 # Find files for the index.
 
-.PHONY: all message help test-dirs check-convert-tool config create-layout
+.PHONY: all message help test-dirs check-convert-tool config layout
 
 all: message check-convert-tool test-dirs static-resources-links $(PAGES) $(ARTICLES) $(PUBLIC_DIR)/index.html
 	@echo Done.
@@ -81,7 +81,7 @@ config:
 	@echo 'ARTICLES_PREFIX      = $(ARTICLES_PREFIX)'
 	@echo 'PAGE_PREFIX          = $(PAGE_PREFIX)'
 
-create-layout:
+layout:
 	@echo -n "Creating basic directory layout for a new site... "
 	@mkdir -p $(SITE_CONTENTS_DIR) $(PAGES_DIR) $(ARTICLES_DIR)\
 		$(PUBLIC_DIR) $(CACHE_DIR) $(STATIC_RESOURCES_DIR)\
@@ -99,11 +99,11 @@ help:
 	@echo "Usage:"
 	@echo "    make [target]"
 	@echo "Targets:"
-	@echo "          all : Builds the full site and/or update all files (default target)."
-	@echo "        index : Rebuilds the index (index.html)."
-	@echo "       config : Shows the values of the configurable variables."
-	@echo "create-layout : Creates the basic directory layout for a new site."
-	@echo "         help : Shows this help."
+	@echo "      all : Builds the full site and/or update all files (default target)."
+	@echo "    index : Rebuilds the index (index.html)."
+	@echo "   config : Shows the values of the configurable variables."
+	@echo "   layout : Creates the basic directory layout for a new site."
+	@echo "     help : Shows this help."
 
 test-dirs:
 	@test -d $(ARTICLES_DIR) || (echo "ERROR: Site contents directory ($(ARTICLES_DIR)) does not exists." && exit 1)
