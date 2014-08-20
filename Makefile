@@ -17,9 +17,9 @@ CACHE_DIR				:= ./cache
 
 DEFAULT_TEMPLATE		:= $(TEMPLATES_DIR)/default.html
 DEFAULT_INDEX_TEMPLATE	:= $(TEMPLATES_DIR)/default-index.html
-DEFAULT_ART_DIR			:= art
-DEFAULT_SCRIPTS_DIR		:= scripts
-DEFAULT_STYLES_DIR		:= styles
+ART_DIR					:= art
+SCRIPTS_DIR				:= scripts
+STYLES_DIR				:= styles
 
 FILE_PATTERN			:= *.md
 
@@ -70,9 +70,9 @@ config:
 	@echo "PAGES_DIR            = $(PAGES_DIR)"
 	@echo "PUBLIC_DIR           = $(PUBLIC_DIR)"
 	@echo "STATIC_RESOURCES_DIR = $(STATIC_RESOURCES_DIR)"
-	@echo "DEFAULT_ART_DIR      = \$$(STATIC_RESOURCES_DIR)/$(DEFAULT_ART_DIR)"
-	@echo "DEFAULT_STYLES_DIR   = \$$(STATIC_RESOURCES_DIR)/$(DEFAULT_STYLES_DIR)"
-	@echo "DEFAULT_SCRIPTS_DIR  = \$$(STATIC_RESOURCES_DIR)/$(DEFAULT_SCRIPTS_DIR)"
+	@echo "ART_DIR              = \$$(STATIC_RESOURCES_DIR)/$(ART_DIR)"
+	@echo "STYLES_DIR           = \$$(STATIC_RESOURCES_DIR)/$(STYLES_DIR)"
+	@echo "SCRIPTS_DIR          = \$$(STATIC_RESOURCES_DIR)/$(SCRIPTS_DIR)"
 	@echo "TEMPLATE             = $(TEMPLATE)"
 	@echo "INDEX_TEMPLATE       = $(INDEX_TEMPLATE)"
 	@echo "FROM_FORMAT          = $(FROM_FORMAT)"
@@ -88,9 +88,9 @@ layout:
 	@echo -n "Creating basic directory layout for a new site... "
 	@mkdir -p $(SITE_CONTENTS_DIR) $(PAGES_DIR) $(ARTICLES_DIR)\
 		$(PUBLIC_DIR) $(CACHE_DIR) $(STATIC_RESOURCES_DIR)\
-		$(STATIC_RESOURCES_DIR)/$(DEFAULT_ART_DIR)\
-		$(STATIC_RESOURCES_DIR)/$(DEFAULT_STYLES_DIR)\
-		$(STATIC_RESOURCES_DIR)/$(DEFAULT_SCRIPTS_DIR)
+		$(STATIC_RESOURCES_DIR)/$(ART_DIR)\
+		$(STATIC_RESOURCES_DIR)/$(STYLES_DIR)\
+		$(STATIC_RESOURCES_DIR)/$(SCRIPTS_DIR)
 	@echo OK.
 
 message:
@@ -150,12 +150,12 @@ $(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES) $(INDEX_TEMPLATE)
 index: $(PUBLIC_DIR)/index.html
 
 static-resources-links:
-	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_STYLES_DIR) &&\
-		ln -s .$(STATIC_RESOURCES_DIR)/$(DEFAULT_STYLES_DIR) $(PUBLIC_DIR)/$(DEFAULT_STYLES_DIR) || true
-	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_ART_DIR) &&\
-		ln -s .$(STATIC_RESOURCES_DIR)/$(DEFAULT_ART_DIR) $(PUBLIC_DIR)/$(DEFAULT_ART_DIR) || true
-	@test ! -L $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR) &&\
-		ln -s .$(STATIC_RESOURCES_DIR)/$(DEFAULT_SCRIPTS_DIR) $(PUBLIC_DIR)/$(DEFAULT_SCRIPTS_DIR) || true
+	@test ! -L $(PUBLIC_DIR)/$(STYLES_DIR) &&\
+		ln -s .$(STATIC_RESOURCES_DIR)/$(STYLES_DIR) $(PUBLIC_DIR)/$(STYLES_DIR) || true
+	@test ! -L $(PUBLIC_DIR)/$(ART_DIR) &&\
+		ln -s .$(STATIC_RESOURCES_DIR)/$(ART_DIR) $(PUBLIC_DIR)/$(ART_DIR) || true
+	@test ! -L $(PUBLIC_DIR)/$(SCRIPTS_DIR) &&\
+		ln -s .$(STATIC_RESOURCES_DIR)/$(SCRIPTS_DIR) $(PUBLIC_DIR)/$(SCRIPTS_DIR) || true
 
 monthly-archive:
 	@echo "Regenerating monthly archive..."
