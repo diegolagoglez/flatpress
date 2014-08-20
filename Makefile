@@ -59,7 +59,6 @@ PANDOC_VARS			:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SI
 .PHONY: all message help test-dirs check-convert-tool config layout
 
 all: message check-convert-tool test-dirs static-resources-links $(PAGES) $(ARTICLES) $(PUBLIC_DIR)/index.html
-	@echo Done.
 
 config:
 	@echo "SITE_CONTENTS_DIR    = $(SITE_CONTENTS_DIR)"
@@ -91,7 +90,7 @@ layout:
 	@echo OK.
 
 message:
-	@echo "Building site '$(SITE_TITLE)' with $(PROJECT)..."
+	@echo "  SITE    $(SITE_TITLE) -- $(PROJECT)"
 
 help:
 	@echo $(PROJECT) $(VERSION) - $(AUTHOR)
@@ -115,31 +114,30 @@ check-convert-tool:
 	@which $(CONVERT_TOOL) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT_TOOL)' tool must be installed." && exit 1)
 
 $(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(TEMPLATE)
-	@echo -n "Building article '$@' from '$<'... "
+	$(eval url := $(shell echo $@ | sed 's/^public//'))
+	@echo "  ARTICLE $(url)"
 	$(eval doctitle := $(shell $(BIN_DIR)/doctitle $<))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(TEMPLATE) --variable title="$(doctitle)" \
 		$(PANDOC_VARS) --output $@ $<
-	@echo OK
 
 $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(TEMPLATE)
-	@echo -n "Building page '$@' from '$<'... "
+	$(eval url := $(shell echo $@ | sed 's/^public//'))
+	@echo "  PAGE    $(url)"
 	$(eval doctitle := $(shell $(BIN_DIR)/doctitle $<))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(TEMPLATE) --variable title="$(doctitle)" \
 		$(PANDOC_VARS) --output $@ $<
-	@echo OK
 
 $(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES) $(INDEX_TEMPLATE)
-	@echo -n "Regenerating index.html... "
+	@echo "  HTML    index.html"
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		$(PANDOC_VARS) --template $(INDEX_TEMPLATE) --section-divs \
 		--output $@ $(INDEX_ARTICLES)
 # Replace <section> with <article> in index.html.
 	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
-	@echo OK
 
 .PHONY: index static-resources-links monthly-archive categories tags
 
@@ -165,6 +163,5 @@ tags:
 .PHONY: clean
 
 clean:
-	@echo -n "Cleaning site... "
+	@echo "  CLEAN"
 	@$(RM) $(PUBLIC_DIR)/*
-	@echo OK.
