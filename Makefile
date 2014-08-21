@@ -41,8 +41,11 @@ INDEX_TEMPLATE			:= $(DEFAULT_INDEX_TEMPLATE)
 ARTICLES_PREFIX			:= /article
 PAGE_PREFIX				:=
 
+# Default Makefile.config file location.
+MAKEFILE_CONFIG_FILE	:= $(SITE_CONTENTS_DIR)/Makefile.config
+
 # Include custom configuration.
--include Makefile.config
+-include $(MAKEFILE_CONFIG_FILE)
 
 # The articles with their prefix (if there is one).
 ARTICLES				:= $(ARTICLES_SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html)
