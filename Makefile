@@ -176,4 +176,4 @@ stats:
 
 clean:
 	@echo "  CLEAN"
-	@$(RM) $(PUBLIC_DIR)/*
+	@$(RM) $(PUBLIC_DIR)/* $(CACHE_DIR)/*
