@@ -18,6 +18,7 @@ PAGES_MENU_FILE			:= $(CACHE_DIR)/pages-menu.html
 
 DOCTITLE_TOOL			:= $(BIN_DIR)/doctitle
 DIRTREE_TOOL			:= $(BIN_DIR)/dirtree2md
+TAGWRAPPER_TOOL			:= $(BIN_DIR)/tagwrapper
 
 DEFAULT_TEMPLATE		:= $(TEMPLATES_DIR)/default.html
 DEFAULT_INDEX_TEMPLATE	:= $(TEMPLATES_DIR)/default-index.html
@@ -174,7 +175,7 @@ endif
 $(CACHE_DIR)/pages-menu.html: $(CACHE_DIR)/pages-menu.md
 ifneq ($(INCLUDE_PAGE_MENU),)
 	@echo "  HTML    $@"
-	@$(CONVERT_TOOL) -f markdown -t html5 -o $@ $<
+	@$(CONVERT_TOOL) -f markdown -t html5 $< | $(TAGWRAPPER_TOOL) -t "<nav>" > $@
 endif
 
 static-resources-links:
