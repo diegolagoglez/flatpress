@@ -14,8 +14,10 @@ PUBLIC_DIR				:= ./public
 TEMPLATES_DIR			:= ./templates
 STATIC_RESOURCES_DIR	:= $(SITE_CONTENTS_DIR)/static
 CACHE_DIR				:= ./cache
+PAGES_MENU_FILE			:= $(CACHE_DIR)/pages-menu.html
 
 DOCTITLE_TOOL			:= $(BIN_DIR)/doctitle
+DIRTREE_TOOL			:= $(BIN_DIR)/dirtree2md
 
 DEFAULT_TEMPLATE		:= $(TEMPLATES_DIR)/default.html
 DEFAULT_INDEX_TEMPLATE	:= $(TEMPLATES_DIR)/default-index.html
@@ -42,6 +44,7 @@ TEMPLATE				:= $(DEFAULT_TEMPLATE)
 INDEX_TEMPLATE			:= $(DEFAULT_INDEX_TEMPLATE)
 ARTICLES_PREFIX			:= /article
 PAGE_PREFIX				:=
+INCLUDE_PAGE_MENU		:= yes
 
 # Default Makefile.config file location.
 MAKEFILE_CONFIG_FILE	:= $(SITE_CONTENTS_DIR)/Makefile.config
@@ -54,10 +57,15 @@ ARTICLES				:= $(ARTICLES_SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)$(ARTICLES_PREF
 PAGES					:= $(PAGES_SRCS:$(PAGES_DIR)/%.md=$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html)
 
 # TODO: Limit file count in output to PAGE_SIZE (head -n $(PAGE_SIZE) outs one file per line).
-INDEX_ARTICLES				:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
+INDEX_ARTICLES			:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
 
 # Pandoc's variables.
-PANDOC_VARS			:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"
+PANDOC_VARS				:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"
+PANDOC_VARS_INDEX		:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"
+
+ifneq ($(INCLUDE_PAGE_MENU),)
+PANDOC_VARS_INDEX		+= --include-before-body $(PAGES_MENU_FILE)
+endif
 
 # Stats.
 PAGE_COUNT		:= 0
@@ -67,7 +75,7 @@ ARTICLE_COUNT	:= 0
 
 .PHONY: all message help test-dirs check-convert-tool config layout
 
-all: message check-convert-tool test-dirs static-resources-links $(PAGES) $(ARTICLES) $(PUBLIC_DIR)/index.html stats
+all: message check-convert-tool test-dirs static-resources-links $(PAGES) $(ARTICLES) $(CACHE_DIR)/pages-menu.html $(PUBLIC_DIR)/index.html stats
 
 config:
 	@echo "SITE_CONTENTS_DIR    = $(SITE_CONTENTS_DIR)"
@@ -88,6 +96,8 @@ config:
 	@echo 'PAGE_AUTHOR          = $(PAGE_AUTHOR)'
 	@echo 'ARTICLES_PREFIX      = $(ARTICLES_PREFIX)'
 	@echo 'PAGE_PREFIX          = $(PAGE_PREFIX)'
+	@echo "INCLUDE_PAGE_MENU    = $(INCLUDE_PAGE_MENU)"
+	@echo "PAGES_MENU_FILE      = $(PAGES_MENU_FILE)"
 
 layout:
 	@echo -n "Creating basic directory layout for a new site... "
@@ -145,7 +155,8 @@ $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(TEMPLATE)
 $(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES) $(INDEX_TEMPLATE)
 	@echo "  HTML    index.html"
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
-		$(PANDOC_VARS) --template $(INDEX_TEMPLATE) --section-divs \
+		--template $(INDEX_TEMPLATE) --section-divs \
+		$(PANDOC_VARS_INDEX)\
 		--output $@ $(INDEX_ARTICLES)
 # Replace <section> with <article> in index.html.
 	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
@@ -153,6 +164,18 @@ $(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES) $(INDEX_TEMPLATE)
 .PHONY: index static-resources-links monthly-archive categories tags
 
 index: $(PUBLIC_DIR)/index.html
+
+$(CACHE_DIR)/pages-menu.md:
+ifneq ($(INCLUDE_PAGE_MENU),)
+	@echo "  GEN     $@"
+	@$(DIRTREE_TOOL) -b $(PAGES_DIR) -f > $@
+endif
+
+$(CACHE_DIR)/pages-menu.html: $(CACHE_DIR)/pages-menu.md
+ifneq ($(INCLUDE_PAGE_MENU),)
+	@echo "  HTML    $@"
+	@$(CONVERT_TOOL) -f markdown -t html5 -o $@ $<
+endif
 
 static-resources-links:
 	@test ! -L $(PUBLIC_DIR)/$(STYLES_DIR) &&\
