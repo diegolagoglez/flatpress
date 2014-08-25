@@ -15,6 +15,8 @@ TEMPLATES_DIR			:= ./templates
 STATIC_RESOURCES_DIR	:= $(SITE_CONTENTS_DIR)/static
 CACHE_DIR				:= ./cache
 
+DOCTITLE_TOOL			:= $(BIN_DIR)/doctitle
+
 DEFAULT_TEMPLATE		:= $(TEMPLATES_DIR)/default.html
 DEFAULT_INDEX_TEMPLATE	:= $(TEMPLATES_DIR)/default-index.html
 ART_DIR					:= art
@@ -123,7 +125,7 @@ check-convert-tool:
 $(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(TEMPLATE)
 	$(eval url := $(shell echo $@ | sed 's/^public//'))
 	@echo "  ARTICLE $(url)"
-	$(eval doctitle := $(shell $(BIN_DIR)/doctitle $<))
+	$(eval doctitle := $(shell $(DOCTITLE_TOOL) $<))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(TEMPLATE) --variable title="$(doctitle)" \
@@ -133,7 +135,7 @@ $(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(TEMPLATE)
 $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(TEMPLATE)
 	$(eval url := $(shell echo $@ | sed 's/^public//'))
 	@echo "  PAGE    $(url)"
-	$(eval doctitle := $(shell $(BIN_DIR)/doctitle $<))
+	$(eval doctitle := $(shell $(DOCTITLE_TOOL) $<))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(TEMPLATE) --variable title="$(doctitle)" \
