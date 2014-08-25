@@ -1,0 +1,74 @@
+#!/bin/bash
+
+OPEN_TAG=
+CLOSE_TAG=
+FILE=
+
+function error() {
+	echo "ERROR: $1" 1>&2
+	exit $2
+}
+
+function usage() {
+	echo "$(basename $0) - Utility to wrap text in between tags (FlatPress Utility)."
+	echo "Usage: $(basename $0) [options]"
+	echo "Options:"
+	echo "  -o <tag> : Open tag."
+	echo "  -c <tag> : Close tag."
+	echo "  -t <tag> : Open tag (close tag will be inferred)."
+	echo "  -f <file>: File to edit, not stdin."
+	echo "  -h       : Show this help."
+	exit 1
+}
+
+function infer_close_tag() {
+	tag=$(sed -re 's/^<(.*)(\ .*)>$/\1/' -e 's/^<(.*)>$/\1/' <<< $OPEN_TAG)
+	CLOSE_TAG="</$tag>"
+}
+
+function check_tags() {
+	if [ -z "$OPEN_TAG" -o -z "$CLOSE_TAG" ]; then
+		error "Tags must not be empty." 2
+	fi
+}
+
+function main() {
+	while getopts ":o:c:f:t:h" opt; do
+		case "$opt" in
+			o)
+				OPEN_TAG="$OPTARG"
+			;;
+			c)
+				CLOSE_TAG="$OPTARG"
+			;;
+			t)
+				OPEN_TAG="$OPTARG"
+				infer_close_tag
+			;;
+			f)
+				FILE="$OPTARG"
+			;;
+			h)
+				usage
+			;;
+			\?)
+				error "Invalid option: -$OPTARG" 1
+			;;
+			\:)
+				error "ERROR: Option -$OPTARG requires an argument." 1
+			;;
+		esac
+	done
+
+	check_tags
+
+	echo $OPEN_TAG
+	if [ ! -z "$FILE" ]; then
+		cat $FILE
+	else
+		cat <&0
+	fi
+	echo $CLOSE_TAG
+}
+
+main $@
