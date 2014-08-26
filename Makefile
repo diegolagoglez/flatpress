@@ -14,6 +14,7 @@ PUBLIC_DIR				:= ./public
 TEMPLATES_DIR			:= ./templates
 STATIC_RESOURCES_DIR	:= $(SITE_CONTENTS_DIR)/static
 CACHE_DIR				:= ./cache
+PAGES_MENU_SRC_FILE		:= $(CACHE_DIR)/pages-menu.md
 PAGES_MENU_FILE			:= $(CACHE_DIR)/pages-menu.html
 
 DOCTITLE_TOOL			:= $(BIN_DIR)/doctitle
@@ -76,7 +77,7 @@ ARTICLE_COUNT	:= 0
 
 .PHONY: all message help test-dirs check-convert-tool config layout
 
-all: message check-convert-tool test-dirs static-resources-links $(PAGES) $(ARTICLES) $(CACHE_DIR)/pages-menu.html $(PUBLIC_DIR)/index.html stats
+all: message check-convert-tool test-dirs static-resources-links $(PAGES) $(ARTICLES) $(PAGES_MENU_FILE) $(PUBLIC_DIR)/index.html stats
 
 config:
 	@echo "SITE_CONTENTS_DIR    = $(SITE_CONTENTS_DIR)"
@@ -153,7 +154,7 @@ $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(TEMPLATE)
 		$(PANDOC_VARS) --output $@ $<
 	$(eval PAGE_COUNT := $(shell expr $(PAGE_COUNT) + 1))
 
-$(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES) $(PAGES_SRCS) $(INDEX_TEMPLATE) $(CACHE_DIR)/pages-menu.html
+$(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES) $(PAGES_SRCS) $(INDEX_TEMPLATE) $(PAGES_MENU_FILE)
 	@echo "  HTML    index.html"
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(INDEX_TEMPLATE) --section-divs \
@@ -166,13 +167,13 @@ $(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES) $(PAGES_SRCS) $(INDEX_TEMPLATE) $(CA
 
 index: $(PUBLIC_DIR)/index.html
 
-$(CACHE_DIR)/pages-menu.md: $(PAGES_SRCS)
+$(PAGES_MENU_SRC_FILE): $(PAGES_SRCS)
 ifneq ($(INCLUDE_PAGE_MENU),)
 	@echo "  GEN     $@"
 	@$(DIRTREE_TOOL) -b $(PAGES_DIR) -f > $@
 endif
 
-$(CACHE_DIR)/pages-menu.html: $(CACHE_DIR)/pages-menu.md
+$(PAGES_MENU_FILE): $(PAGES_MENU_SRC_FILE)
 ifneq ($(INCLUDE_PAGE_MENU),)
 	@echo "  HTML    $@"
 	@$(CONVERT_TOOL) -f markdown -t html5 $< | $(TAGWRAPPER_TOOL) -t "<nav>" > $@
