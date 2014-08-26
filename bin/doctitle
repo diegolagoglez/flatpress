@@ -1,5 +1,68 @@
 #!/bin/bash
 
-if [ -f "$1" ]; then
-	grep '.' "$1" | head -n 1 | sed -re 's/^(\s*)#(\s*)(.*)$/\3/' -e 's/\s*#$//' -e 's/\[(.*)\]\((.*)\)/\1/'
-fi
+INCLUDE_LINK=
+BASE_PATH=
+
+function error() {
+	echo "ERROR: $1" 1>&2
+	exit $2
+}
+
+function parse_path() {
+	sed -re 's/\//\\\//g' <<< "$1"
+}
+
+function usage() {
+	echo "$(basename $0) - Utility to get the main title of a Markdown document - FlatPress Utility"
+	echo "Usage: $(basename $0) [options] <file>"
+	echo "Options:"
+	echo "  -a <path> : Include markdown link into title setting base path."
+	echo "  -h        : Show this help."
+}
+
+function generate_link() {
+	path=$(parse_path $BASE_PATH)
+	sed -r "s/$path//" <<< "$1"
+}
+
+function process_file() {
+	if [ -f "$1" ]; then
+		if [ ! -z "$INCLUDE_LINK" ]; then
+			title=$(grep '.' "$1" | head -n 1 | sed -re 's/^(\s*)#(\s*)(.*)$/\3/' -e 's/\s*#$//' -e 's/\[(.*)\]\((.*)\)/\1/')
+			echo "[$title]($(generate_link $1))"
+		else
+			grep '.' "$1" | head -n 1 | sed -re 's/^(\s*)#(\s*)(.*)$/\3/' -e 's/\s*#$//' -e 's/\[(.*)\]\((.*)\)/\1/'
+		fi
+	fi
+}
+
+function main() {
+	while getopts ":a:h" opt; do
+		case "$opt" in
+			a)
+				INCLUDE_LINK=yes
+				BASE_PATH="$OPTARG"
+				shift
+				shift
+			;;
+			h)
+				usage
+				exit 1
+			;;
+			\?)
+				error "Invalid option: -$OPTARG" 1
+			;;
+			\:)
+				error "ERROR: Option -$OPTARG requires an argument." 1
+			;;
+		esac
+	done
+
+	if [ ! -z "$INCLUDE_LINK" -a -z "$BASE_PATH" ]; then
+		error "Base path must be specified." 2
+	fi
+
+	process_file $@
+}
+
+main $@
