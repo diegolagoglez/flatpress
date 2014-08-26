@@ -139,7 +139,7 @@ $(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(TEMPLATE)
 	$(eval doctitle := $(shell $(DOCTITLE_TOOL) $<))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
-		--template $(TEMPLATE) --variable title="$(doctitle)" \
+		--template $(TEMPLATE) --variable title='$(doctitle)' \
 		$(PANDOC_VARS) --output $@ $<
 	$(eval ARTICLE_COUNT := $(shell expr $(ARTICLE_COUNT) + 1))
 
@@ -149,7 +149,7 @@ $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(TEMPLATE)
 	$(eval doctitle := $(shell $(DOCTITLE_TOOL) $<))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
-		--template $(TEMPLATE) --variable title="$(doctitle)" \
+		--template $(TEMPLATE) --variable title='$(doctitle)' \
 		$(PANDOC_VARS) --output $@ $<
 	$(eval PAGE_COUNT := $(shell expr $(PAGE_COUNT) + 1))
 
