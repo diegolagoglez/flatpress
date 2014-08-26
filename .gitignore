@@ -1,4 +1,5 @@
 # Ignore default locations of site, public and cache.
+site
 site/*
 public/*
 cache/*
