@@ -14,7 +14,11 @@ function parse_path() {
 }
 
 function replace_extension() {
-	sed "s/${EXTENSION}$/${HTML_EXTENSION}/" <<< $1
+	sed -r "s/${EXTENSION}$/${HTML_EXTENSION}/" <<< $1
+}
+
+function remove_extension() {
+	sed -r 's/(\.[^\.]*)$//' <<< $1
 }
 
 function error() {
@@ -56,13 +60,13 @@ function dir_tree() {
 			if [ ! -z "$ONLY_IF_FILE" ]; then
 				file="$REPLY$EXTENSION"
 				if [ -f "$file" ]; then
-					echo "$(repeat '\t' $DEEP)* [$($DOCTITLE_TOOL $file)](/$(sed -re $BASE_PATH_REMOVAL_REGEX <<< $REPLY)$HTML_EXTENSION)"
+					echo "$(repeat '\t' $DEEP)* [$($DOCTITLE_TOOL $file)]($(sed -re $BASE_PATH_REMOVAL_REGEX <<< $REPLY)$HTML_EXTENSION)"
 				fi
 			else
 				echo "$(repeat '\t' $DEEP)* [$(basename $REPLY)]($(sed -re $BASE_PATH_REMOVAL_REGEX <<< $REPLY))"
-				dir_tree $REPLY
 			fi
-		elif [ -f "$REPLY" ]; then
+			dir_tree $REPLY
+		elif [[ -f "$REPLY" && ( -z "$ONLY_IF_FILE" || ! -d "$(remove_extension $REPLY)" ) ]]; then
 			echo "$(repeat '\t' $DEEP)* [$($DOCTITLE_TOOL $REPLY)]($(sed -re $BASE_PATH_REMOVAL_REGEX <<< $(replace_extension $REPLY)))"
 		fi
 	done
