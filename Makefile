@@ -153,7 +153,7 @@ $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(TEMPLATE)
 		$(PANDOC_VARS) --output $@ $<
 	$(eval PAGE_COUNT := $(shell expr $(PAGE_COUNT) + 1))
 
-$(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES) $(INDEX_TEMPLATE)
+$(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES) $(PAGES_SRCS) $(INDEX_TEMPLATE) $(CACHE_DIR)/pages-menu.html
 	@echo "  HTML    index.html"
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(INDEX_TEMPLATE) --section-divs \
@@ -166,7 +166,7 @@ $(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES) $(INDEX_TEMPLATE)
 
 index: $(PUBLIC_DIR)/index.html
 
-$(CACHE_DIR)/pages-menu.md:
+$(CACHE_DIR)/pages-menu.md: $(PAGES_SRCS)
 ifneq ($(INCLUDE_PAGE_MENU),)
 	@echo "  GEN     $@"
 	@$(DIRTREE_TOOL) -b $(PAGES_DIR) -f > $@
