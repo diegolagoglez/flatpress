@@ -5,6 +5,7 @@ source bin/flatpress-common
 INCLUDE_LINK=
 BASE_PATH=
 FULL_TEXT=
+PREPEND_PATH=
 EXTENSION=".md"
 HTML_EXTENSION=".html"
 
@@ -18,12 +19,13 @@ function usage() {
 	echo "Options:"
 	echo "  -a <path> : Include markdown link into title setting base path."
 	echo "  -f        : Print full file text with title with link (must specify -a)."
+	echo "  -p <path> : Prepend path (e.g. from '/article.html' to '/<path>/article.html')."
 	echo "  -h        : Show this help."
 }
 
 function generate_link() {
 	path=$(escape_path $BASE_PATH)
-	add_root_path "$(replace_extension $(sed -r "s/$path//" <<< "$1"))"
+	add_root_path $PREPEND_PATH$(add_root_path $(replace_extension $(sed -r "s/$path//" <<< "$1")))
 }
 
 function get_file_main_title() {
@@ -39,12 +41,12 @@ function get_file_main_title() {
 
 function set_title_link() {
 	file="$1"
-	link="$(escape_path $(add_root_path $2))"
+	link="$(escape_path $2)"
 	sed -r "0,/RE/s/^(\s*)#(\s+)(.*)$/#\ [\3]\($link\)/" < "$file"
 }
 
 function main() {
-	while getopts ":a:fh" opt; do
+	while getopts ":a:fp:h" opt; do
 		case "$opt" in
 			a)
 				INCLUDE_LINK=yes
@@ -52,6 +54,9 @@ function main() {
 			;;
 			f)
 				FULL_TEXT=yes
+			;;
+			p)
+				PREPEND_PATH="$OPTARG"
 			;;
 			h)
 				usage
