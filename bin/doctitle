@@ -77,7 +77,10 @@ function main() {
 		if [ -z "$INCLUDE_LINK" -o -z "$BASE_PATH" ]; then
 			error "Option -f requires option -a." 3
 		fi
-		set_title_link $1 $(generate_link "$1")
+		while [ -n "$1" ]; do
+			set_title_link $1 $(generate_link "$1")
+			shift
+		done
 	fi
 }
 
