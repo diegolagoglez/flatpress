@@ -1,18 +1,11 @@
 #!/bin/bash
 
+source bin/flatpress-common
+
 INCLUDE_LINK=
 BASE_PATH=
 EXTENSION=".md"
 HTML_EXTENSION=".html"
-
-function error() {
-	echo "ERROR: $1" 1>&2
-	exit $2
-}
-
-function parse_path() {
-	sed -re 's/\//\\\//g' <<< "$1"
-}
 
 function replace_extension() {
 	sed -r "s/${EXTENSION}$/${HTML_EXTENSION}/" <<< $1
@@ -27,7 +20,7 @@ function usage() {
 }
 
 function generate_link() {
-	path=$(parse_path $BASE_PATH)
+	path=$(escape_path $BASE_PATH)
 	replace_extension "$(sed -r "s/$path//" <<< "$1")"
 }
 

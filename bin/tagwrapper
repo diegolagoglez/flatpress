@@ -1,13 +1,10 @@
 #!/bin/bash
 
+source bin/flatpress-common
+
 OPEN_TAG=
 CLOSE_TAG=
 FILE=
-
-function error() {
-	echo "ERROR: $1" 1>&2
-	exit $2
-}
 
 function usage() {
 	echo "$(basename $0) - Utility to wrap text in between tags (FlatPress Utility)."

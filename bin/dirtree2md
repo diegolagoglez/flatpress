@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source bin/flatpress-common
+
 DEEP=-1
 EXTENSION=".md"
 HTML_EXTENSION=".html"
@@ -9,21 +11,8 @@ OPT_BASE_URL=
 ONLY_IF_FILE=
 DOCTITLE_TOOL="bin/doctitle"
 
-function parse_path() {
-	sed -re 's/\//\\\//g' <<< "$1"
-}
-
 function replace_extension() {
 	sed -r "s/${EXTENSION}$/${HTML_EXTENSION}/" <<< $1
-}
-
-function remove_extension() {
-	sed -r 's/(\.[^\.]*)$//' <<< $1
-}
-
-function error() {
-	echo "ERROR: $1" 1>&2
-	exit $2
 }
 
 function check_options() {
@@ -43,12 +32,6 @@ function usage() {
 	echo "  -u <url> : Set base URL to prepend."
 	echo "  -f       : Generate only if there is a Markdown file with the same name."
 	echo "  -d <tool>: Sets doctitle tool (default to $DOCTITLE_TOOL)."
-}
-
-function repeat() {
-	if [ $2 -gt 0 ]; then
-		printf "$1%.0s" {1..$2}
-	fi
 }
 
 function dir_tree() {
@@ -82,7 +65,7 @@ function main() {
 		case "$opt" in
 			b)
 				OPT_BASE=$OPTARG
-				BASE_PATH_REMOVAL_REGEX="s/$(parse_path $OPT_BASE)//"
+				BASE_PATH_REMOVAL_REGEX="s/$(escape_path $OPT_BASE)//"
 			;;
 			u)
 				OPT_BASE_URL=$OPTARG
