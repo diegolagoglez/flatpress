@@ -29,3 +29,12 @@ function repeat() {
 		printf "$1%.0s" {1..$2}
 	fi
 }
+
+# Print a path with "/" at the beginning. Adds if it hasn't.
+# $1 Path.
+function add_root_path() {
+	if [ "${1:0:1}" != "/" ]; then
+		echo -n "/"
+	fi
+	echo "$1"
+}
