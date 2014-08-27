@@ -29,10 +29,10 @@ function generate_link() {
 function get_file_main_title() {
 	if [ -f "$1" ]; then
 		if [ ! -z "$INCLUDE_LINK" ]; then
-			title=$(grep '.' "$1" | head -n 1 | sed -re 's/^(\s*)#(\s*)(.*)$/\3/' -e 's/\s*#$//' -e 's/\[(.*)\]\((.*)\)/\1/')
+			title=$(grep -m 1 '^ *# ' "$1" | sed -re 's/^(\s*)#(\s*)(.*)$/\3/' -e 's/\s*#$//' -e 's/\[(.*)\]\((.*)\)/\1/')
 			echo "[$title]($(generate_link $1))"
 		else
-			grep '.' "$1" | head -n 1 | sed -re 's/^(\s*)#(\s*)(.*)$/\3/' -e 's/\s*#$//' -e 's/\[(.*)\]\((.*)\)/\1/'
+			grep -m 1 '^ *# ' "$1" | sed -re 's/^(\s*)#(\s*)(.*)$/\3/' -e 's/\s*#$//' -e 's/\[(.*)\]\((.*)\)/\1/'
 		fi
 	fi
 }
