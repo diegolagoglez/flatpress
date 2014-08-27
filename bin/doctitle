@@ -23,7 +23,7 @@ function usage() {
 
 function generate_link() {
 	path=$(escape_path $BASE_PATH)
-	replace_extension "$(sed -r "s/$path//" <<< "$1")"
+	add_root_path "$(replace_extension $(sed -r "s/$path//" <<< "$1"))"
 }
 
 function get_file_main_title() {
@@ -39,7 +39,7 @@ function get_file_main_title() {
 
 function set_title_link() {
 	file="$1"
-	link="$(escape_path $2)"
+	link="$(escape_path $(add_root_path $2))"
 	sed -r "0,/RE/s/^(\s*)#(\s*)(.*)$/#\ [\3]\($link\)/" < "$file"
 }
 
