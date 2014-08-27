@@ -6,6 +6,7 @@ INCLUDE_LINK=
 BASE_PATH=
 FULL_TEXT=
 PREPEND_PATH=
+ADD_A_BLANK_LINE_TO_THE_END_OF_THE_FILE=
 EXTENSION=".md"
 HTML_EXTENSION=".html"
 
@@ -20,6 +21,7 @@ function usage() {
 	echo "  -a <path> : Include markdown link into title setting base path."
 	echo "  -f        : Print full file text with title with link (must specify -a)."
 	echo "  -p <path> : Prepend path (e.g. from '/article.html' to '/<path>/article.html')."
+	echo "  -b        : Add a blank line to the end of each processed file."
 	echo "  -h        : Show this help."
 }
 
@@ -43,10 +45,13 @@ function set_title_link() {
 	file="$1"
 	link="$(escape_path $2)"
 	sed -r "0,/RE/s/^(\s*)#(\s+)(.*)$/#\ [\3]\($link\)/" < "$file"
+	if [ -n "$ADD_A_BLANK_LINE_TO_THE_END_OF_THE_FILE" ]; then
+		echo
+	fi
 }
 
 function main() {
-	while getopts ":a:fp:h" opt; do
+	while getopts ":a:fbp:h" opt; do
 		case "$opt" in
 			a)
 				INCLUDE_LINK=yes
@@ -57,6 +62,9 @@ function main() {
 			;;
 			p)
 				PREPEND_PATH="$OPTARG"
+			;;
+			b)
+				ADD_A_BLANK_LINE_TO_THE_END_OF_THE_FILE=yes
 			;;
 			h)
 				usage
