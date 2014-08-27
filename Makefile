@@ -156,7 +156,7 @@ $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(TEMPLATE)
 
 $(CACHE_DIR)/index.md: $(INDEX_ARTICLES)
 	@echo "  GEN     $@"
-	@$(DOCTITLE_TOOL) -p $(ARTICLES_PREFIX) -f -a $(ARTICLES_DIR) $(INDEX_ARTICLES) > $@
+	@$(DOCTITLE_TOOL) -p $(ARTICLES_PREFIX) -b -f -a $(ARTICLES_DIR) $(INDEX_ARTICLES) > $@
 
 $(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) $(PAGES_MENU_FILE)
 	@echo "  HTML    $@"
