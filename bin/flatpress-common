@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Show error and exit.
+# $1 Error string.
+# $2 Exit code.
+function error() {
+	echo "ERROR: $1" 1>&2
+	exit $2
+}
+
+# Escape path from '/a/path/to/file' to '\/a\/path\/to\/file'.
+# $1 Path to escape.
+function escape_path() {
+	sed -re 's/\//\\\//g' <<< "$1"
+}
+
+# Remove file extension (from 'file.txt' to 'file' or from
+# 'file.txt.exe' to 'file.txt').
+# $1 File name.
+function remove_extension() {
+	sed -r 's/(\.[^\.]*)$//' <<< "$1"
+}
+
+# Repeat a character N times.
+# $1 Character.
+# $2 Times.
+function repeat() {
+	if [ $2 -gt 0 ]; then
+		printf "$1%.0s" {1..$2}
+	fi
+}
