@@ -154,12 +154,16 @@ $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(TEMPLATE)
 		$(PANDOC_VARS) --output $@ $<
 	$(eval PAGE_COUNT := $(shell expr $(PAGE_COUNT) + 1))
 
-$(PUBLIC_DIR)/index.html: $(INDEX_ARTICLES) $(PAGES_SRCS) $(INDEX_TEMPLATE) $(PAGES_MENU_FILE)
-	@echo "  HTML    index.html"
+$(CACHE_DIR)/index.md: $(INDEX_ARTICLES)
+	@echo "  GEN     $@"
+	@$(DOCTITLE_TOOL) -f -a $(ARTICLES_DIR) $(INDEX_ARTICLES) > $@
+
+$(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) $(PAGES_MENU_FILE)
+	@echo "  HTML    $@"
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(INDEX_TEMPLATE) --section-divs \
 		$(PANDOC_VARS_INDEX)\
-		--output $@ $(INDEX_ARTICLES)
+		--output $@ $(CACHE_DIR)/index.md
 # Replace <section> with <article> in index.html.
 	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
 
