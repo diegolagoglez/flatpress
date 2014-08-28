@@ -174,7 +174,7 @@ index: $(PUBLIC_DIR)/index.html
 $(PAGES_MENU_SRC_FILE): $(PAGES_SRCS)
 ifneq ($(INCLUDE_PAGE_MENU),)
 	@echo "  GEN     $@"
-	@$(DIRTREE_TOOL) -b $(PAGES_DIR) -f > $@
+	@$(DIRTREE_TOOL) -l -b $(PAGES_DIR) -f > $@
 endif
 
 $(PAGES_MENU_FILE): $(PAGES_MENU_SRC_FILE)
