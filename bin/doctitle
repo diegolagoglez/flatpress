@@ -7,6 +7,7 @@ BASE_PATH=
 FULL_TEXT=
 PREPEND_PATH=
 ADD_A_BLANK_LINE_TO_THE_END_OF_THE_FILE=
+DO_NOT_REMOVE_LINK=
 EXTENSION=".md"
 HTML_EXTENSION=".html"
 
@@ -22,6 +23,7 @@ function usage() {
 	echo "  -f        : Print full file text with title with link (must specify -a)."
 	echo "  -p <path> : Prepend path (e.g. from '/article.html' to '/<path>/article.html')."
 	echo "  -b        : Add a blank line to the end of each processed file."
+	echo "  -n        : Do not remove link if title has one."
 	echo "  -h        : Show this help."
 }
 
@@ -36,7 +38,11 @@ function get_file_main_title() {
 			title=$(grep -m 1 '^ *# ' "$1" | sed -re 's/^(\s*)#(\s+)(.*)$/\3/' -e 's/\s*#$//' -e 's/\[(.*)\]\((.*)\)/\1/')
 			echo "[$title]($(generate_link $1))"
 		else
-			grep -m 1 '^ *# ' "$1" | sed -re 's/^(\s*)#(\s+)(.*)$/\3/' -e 's/\s*#$//' -e 's/\[(.*)\]\((.*)\)/\1/'
+			if [ -z "$DO_NOT_REMOVE_LINK" ]; then
+				grep -m 1 '^ *# ' "$1" | sed -re 's/^(\s*)#(\s+)(.*)$/\3/' -e 's/\s*#$//' -e 's/\[(.*)\]\((.*)\)/\1/'
+			else
+				grep -m 1 '^ *# ' "$1" | sed -re 's/^(\s*)#(\s+)(.*)$/\3/' -e 's/\s*#$//'
+			fi
 		fi
 	fi
 }
@@ -51,7 +57,7 @@ function set_title_link() {
 }
 
 function main() {
-	while getopts ":a:fbp:h" opt; do
+	while getopts ":a:fbp:nh" opt; do
 		case "$opt" in
 			a)
 				INCLUDE_LINK=yes
@@ -65,6 +71,9 @@ function main() {
 			;;
 			b)
 				ADD_A_BLANK_LINE_TO_THE_END_OF_THE_FILE=yes
+			;;
+			n)
+				DO_NOT_REMOVE_LINK=yes
 			;;
 			h)
 				usage
