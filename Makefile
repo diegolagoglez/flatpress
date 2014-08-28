@@ -64,9 +64,13 @@ INDEX_ARTICLES			:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)'
 # Pandoc's variables.
 PANDOC_VARS				:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"
 PANDOC_VARS_INDEX		:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"
+PANDOC_VARS_PAGES		:=
+PANDOC_VARS_ARTICLES	:=
 
 ifneq ($(INCLUDE_PAGE_MENU),)
 PANDOC_VARS_INDEX		+= --include-before-body $(PAGES_MENU_FILE)
+PANDOC_VARS_PAGES		+= --include-before-body $(PAGES_MENU_FILE)
+PANDOC_VARS_ARTICLES	+= --include-before-body $(PAGES_MENU_FILE)
 endif
 
 # Stats.
@@ -134,24 +138,24 @@ test-dirs:
 check-convert-tool:
 	@which $(CONVERT_TOOL) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT_TOOL)' tool must be installed." && exit 1)
 
-$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(TEMPLATE)
+$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(PAGES_MENU_FILE) $(TEMPLATE)
 	$(eval url := $(shell echo $@ | sed 's/^public//'))
 	@echo "  ARTICLE $(url)"
 	$(eval doctitle := $(shell $(DOCTITLE_TOOL) $<))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(TEMPLATE) --variable title='$(doctitle)' \
-		$(PANDOC_VARS) --output $@ $<
+		$(PANDOC_VARS) $(PANDOC_VARS_ARTICLES) --output $@ $<
 	$(eval ARTICLE_COUNT := $(shell expr $(ARTICLE_COUNT) + 1))
 
-$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(TEMPLATE)
+$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(PAGES_MENU_FILE) $(TEMPLATE)
 	$(eval url := $(shell echo $@ | sed 's/^public//'))
 	@echo "  PAGE    $(url)"
 	$(eval doctitle := $(shell $(DOCTITLE_TOOL) $<))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(TEMPLATE) --variable title='$(doctitle)' \
-		$(PANDOC_VARS) --output $@ $<
+		$(PANDOC_VARS) $(PANDOC_VARS_PAGES) --output $@ $<
 	$(eval PAGE_COUNT := $(shell expr $(PAGE_COUNT) + 1))
 
 $(CACHE_DIR)/index.md: $(INDEX_ARTICLES)
