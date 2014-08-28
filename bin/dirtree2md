@@ -9,6 +9,7 @@ OPT_BASE=
 BASE_PATH_REMOVAL_REGEX=
 OPT_BASE_URL=
 ONLY_IF_FILE=
+ONLY_THE_URL=
 DOCTITLE_TOOL="bin/doctitle"
 
 function replace_extension() {
@@ -31,6 +32,7 @@ function usage() {
 	echo "  -b <dir> : Set base dir."
 	echo "  -u <url> : Set base URL to prepend."
 	echo "  -f       : Generate only if there is a Markdown file with the same name."
+	echo "  -l       : If the file has only a title with an URL, add only that URL."
 	echo "  -d <tool>: Sets doctitle tool (default to $DOCTITLE_TOOL)."
 }
 
@@ -38,19 +40,27 @@ function dir_tree() {
 	DEEP=$(($DEEP+1))
 	base="$1"
 	find $base -mindepth 1 -maxdepth 1 | sort | while read; do
-		#echo "$REPLY"
 		if [ -d "$REPLY" ]; then
+			# There is a directory...
 			if [ ! -z "$ONLY_IF_FILE" ]; then
+				# ...and if -f is given AND...
 				file="$REPLY$EXTENSION"
 				if [ -f "$file" ]; then
-					echo "$(repeat '\t' $DEEP)* [$($DOCTITLE_TOOL $file)]($(sed -re $BASE_PATH_REMOVAL_REGEX <<< $REPLY)$HTML_EXTENSION)"
+					# ...there is a file with the same name (and .md as extension), generate the page.
+					echo "$(repeat '\t' $DEEP)* [$($DOCTITLE_TOOL $file)]($(add_root_path $(sed -re $BASE_PATH_REMOVAL_REGEX <<< $REPLY)$HTML_EXTENSION))"
 				fi
 			else
-				echo "$(repeat '\t' $DEEP)* [$(basename $REPLY)]($(sed -re $BASE_PATH_REMOVAL_REGEX <<< $REPLY))"
+				# If no -f option, generate the page anyway.
+				echo "$(repeat '\t' $DEEP)* [$(basename $REPLY)]($(add_root_path $(sed -re $BASE_PATH_REMOVAL_REGEX <<< $REPLY)))"
 			fi
 			dir_tree $REPLY
-		elif [[ -f "$REPLY" && ( -z "$ONLY_IF_FILE" || ! -d "$(remove_extension $REPLY)" ) ]]; then
-			echo "$(repeat '\t' $DEEP)* [$($DOCTITLE_TOOL $REPLY)]($(sed -re $BASE_PATH_REMOVAL_REGEX <<< $(replace_extension $REPLY)))"
+		elif [ -f "$REPLY" ]; then
+			# If there is a file...
+			if [[ -n "$ONLY_THE_URL" && $(wc -l < $REPLY) == 1 ]]; then
+				echo "$(repeat '\t' $DEEP)* $($DOCTITLE_TOOL -n $REPLY)"
+			elif [[ -z "$ONLY_IF_FILE" || ! -d "$(remove_extension $REPLY)" ]]; then
+				echo "$(repeat '\t' $DEEP)* [$($DOCTITLE_TOOL $REPLY)]($(add_root_path $(sed -re $BASE_PATH_REMOVAL_REGEX <<< $(replace_extension $REPLY))))"
+			fi
 		fi
 	done
 	DEEP=$(($DEEP-1))
@@ -61,7 +71,7 @@ function main() {
 		usage
 		exit 1
 	fi
-	while getopts ":b:u:fd" opt; do
+	while getopts ":b:u:fld" opt; do
 		case "$opt" in
 			b)
 				OPT_BASE=$OPTARG
@@ -72,6 +82,9 @@ function main() {
 			;;
 			f)
 				ONLY_IF_FILE=yes
+			;;
+			l)
+				ONLY_THE_URL=yes
 			;;
 			d)
 				DOCTITLE_TOOL="$OPTARG"
