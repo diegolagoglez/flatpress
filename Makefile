@@ -58,7 +58,7 @@ MAKEFILE_CONFIG_FILE	:= $(SITE_CONTENTS_DIR)/Makefile.config
 ARTICLES				:= $(ARTICLES_SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html)
 PAGES					:= $(PAGES_SRCS:$(PAGES_DIR)/%.md=$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html)
 
-# TODO: Limit file count in output to PAGE_SIZE (head -n $(PAGE_SIZE) outs one file per line).
+# Find files for the index.
 INDEX_ARTICLES			:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
 
 # Pandoc's variables.
@@ -77,12 +77,12 @@ endif
 PAGE_COUNT		:= 0
 ARTICLE_COUNT	:= 0
 
-# Find files for the index.
 
 .PHONY: all message help test-dirs check-convert-tool config layout
 
 all: message check-convert-tool test-dirs static-resources-links $(PAGES) $(ARTICLES) $(PAGES_MENU_FILE) $(PUBLIC_DIR)/index.html stats
 
+# Show configuration variables (overridable by Makefile.config).
 config:
 	@echo "SITE_CONTENTS_DIR    = $(SITE_CONTENTS_DIR)"
 	@echo "ARTICLES_DIR         = $(ARTICLES_DIR)"
@@ -105,6 +105,7 @@ config:
 	@echo "INCLUDE_PAGE_MENU    = $(INCLUDE_PAGE_MENU)"
 	@echo "PAGES_MENU_FILE      = $(PAGES_MENU_FILE)"
 
+# Create site's default directory layout.
 layout:
 	@echo -n "Creating basic directory layout for a new site... "
 	@mkdir -p $(SITE_CONTENTS_DIR) $(PAGES_DIR) $(ARTICLES_DIR)\
@@ -114,9 +115,11 @@ layout:
 		$(STATIC_RESOURCES_DIR)/$(SCRIPTS_DIR)
 	@echo OK.
 
+# Print a message.
 message:
 	@echo "  SITE    $(SITE_TITLE) -- $(PROJECT)"
 
+# Show help.
 help:
 	@echo $(PROJECT) $(VERSION) - $(AUTHOR)
 	@echo "Really, really simple utility to build static Internet sites."
@@ -129,15 +132,18 @@ help:
 	@echo "   layout : Creates the basic directory layout for a new site."
 	@echo "     help : Shows this help."
 
+# Check directory existence.
 test-dirs:
 	@test -d $(ARTICLES_DIR) || (echo "ERROR: Site contents directory ($(ARTICLES_DIR)) does not exists." && exit 1)
 	@test ! -d $(PUBLIC_DIR) && echo "Site generated contents directory ($(PUBLIC_DIR)) does not exist. Creating..." && mkdir -p $(PUBLIC_DIR) || true
 	@test ! -d $(TEMPLATES_DIR) && echo "WARNING: There are not templates." || true
 	@test ! -d $(CACHE_DIR) && echo "WARNING: There are not cache directory." || true
 
+# Check convert tool (pandoc) existence.
 check-convert-tool:
 	@which $(CONVERT_TOOL) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT_TOOL)' tool must be installed." && exit 1)
 
+# Articles generation.
 $(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(PAGES_MENU_FILE) $(TEMPLATE)
 	$(eval url := $(shell echo $@ | sed 's/^public//'))
 	@echo "  ARTICLE $(url)"
@@ -148,6 +154,7 @@ $(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(PAGES_MENU_FILE) 
 		$(PANDOC_VARS) $(PANDOC_VARS_ARTICLES) --output $@ $<
 	$(eval ARTICLE_COUNT := $(shell expr $(ARTICLE_COUNT) + 1))
 
+# Pages generation.
 $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(PAGES_MENU_FILE) $(TEMPLATE)
 	$(eval url := $(shell echo $@ | sed 's/^public//'))
 	@echo "  PAGE    $(url)"
@@ -158,10 +165,12 @@ $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(PAGES_MENU_FILE) $(TEMP
 		$(PANDOC_VARS) $(PANDOC_VARS_PAGES) --output $@ $<
 	$(eval PAGE_COUNT := $(shell expr $(PAGE_COUNT) + 1))
 
+# Index generation (markdown; cached).
 $(CACHE_DIR)/index.md: $(INDEX_ARTICLES)
 	@echo "  GEN     $@"
 	@$(DOCTITLE_TOOL) -p $(ARTICLES_PREFIX) -b -f -a $(ARTICLES_DIR) $(INDEX_ARTICLES) > $@
 
+# Public index generation.
 $(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) $(PAGES_MENU_FILE)
 	@echo "  HTML    $@"
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
@@ -173,20 +182,24 @@ $(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) 
 
 .PHONY: index static-resources-links monthly-archive categories tags
 
+# Alias for public/index.html
 index: $(PUBLIC_DIR)/index.html
 
+# Pages menu geneartion (markdown; cached).
 $(PAGES_MENU_SRC_FILE): $(PAGES_SRCS)
 ifneq ($(INCLUDE_PAGE_MENU),)
 	@echo "  GEN     $@"
 	@$(DIRTREE_TOOL) -l -b $(PAGES_DIR) -f > $@
 endif
 
+# Pages menu generation (to include in index, pages and articles).
 $(PAGES_MENU_FILE): $(PAGES_MENU_SRC_FILE)
 ifneq ($(INCLUDE_PAGE_MENU),)
 	@echo "  HTML    $@"
 	@$(CONVERT_TOOL) -f markdown -t html5 $< | $(TAGWRAPPER_TOOL) -t "<nav>" > $@
 endif
 
+# Links from resources (from site) directories to public directory.
 static-resources-links:
 	@test ! -L $(PUBLIC_DIR)/$(STYLES_DIR) &&\
 		ln -s .$(STATIC_RESOURCES_DIR)/$(STYLES_DIR) $(PUBLIC_DIR)/$(STYLES_DIR) || true
@@ -206,9 +219,11 @@ tags:
 
 .PHONY: clean stats
 
+# Show generation stats.
 stats:
 	@echo "  STATS   $(PAGE_COUNT) pages, $(ARTICLE_COUNT) articles"
 
+# Clean (remove public and cache directory contents).
 clean:
 	@echo "  CLEAN"
 	@$(RM) $(PUBLIC_DIR)/* $(CACHE_DIR)/*
