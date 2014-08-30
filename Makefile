@@ -26,6 +26,7 @@ DEFAULT_INDEX_TEMPLATE	:= $(TEMPLATES_DIR)/default-index.html
 ART_DIR					:= art
 SCRIPTS_DIR				:= scripts
 STYLES_DIR				:= styles
+DEFAULT_DATE_FORMAT		:= "+%Y-%m-%d"
 
 FILE_PATTERN			:= *.md
 
@@ -47,6 +48,7 @@ INDEX_TEMPLATE			:= $(DEFAULT_INDEX_TEMPLATE)
 ARTICLES_PREFIX			:= /article
 PAGE_PREFIX				:=
 INCLUDE_PAGE_MENU		:= yes
+DATE_FORMAT				:= $(DEFAULT_DATE_FORMAT)
 
 # Default Makefile.config file location.
 MAKEFILE_CONFIG_FILE	:= $(SITE_CONTENTS_DIR)/Makefile.config
@@ -61,9 +63,13 @@ PAGES					:= $(PAGES_SRCS:$(PAGES_DIR)/%.md=$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html)
 # Find files for the index.
 INDEX_ARTICLES			:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
 
+GEN_DATE				:= $(shell date $(DATE_FORMAT))
+
 # Pandoc's variables.
-PANDOC_VARS				:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"
-PANDOC_VARS_INDEX		:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"
+PANDOC_VARS				:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"\
+	--variable gen-date=$(GEN_DATE)
+PANDOC_VARS_INDEX		:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"\
+	--variable gen-date=$(GEN_DATE)
 PANDOC_VARS_PAGES		:=
 PANDOC_VARS_ARTICLES	:=
 
@@ -104,6 +110,7 @@ config:
 	@echo 'PAGE_PREFIX          = $(PAGE_PREFIX)'
 	@echo "INCLUDE_PAGE_MENU    = $(INCLUDE_PAGE_MENU)"
 	@echo "PAGES_MENU_FILE      = $(PAGES_MENU_FILE)"
+	@echo "DATE_FORMAT          = $(DATE_FORMAT)"
 
 # Create site's default directory layout.
 layout:
