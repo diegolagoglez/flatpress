@@ -23,10 +23,12 @@ TAGWRAPPER_TOOL			:= $(BIN_DIR)/tagwrapper
 
 DEFAULT_TEMPLATE		:= $(TEMPLATES_DIR)/default.html
 DEFAULT_INDEX_TEMPLATE	:= $(TEMPLATES_DIR)/default-index.html
+DEFAULT_ASIDE_TEMPLATE	:= $(TEMPLATES_DIR)/default-aside.html
 ART_DIR					:= art
 SCRIPTS_DIR				:= scripts
 STYLES_DIR				:= styles
 DEFAULT_DATE_FORMAT		:= "+%Y-%m-%d"
+DEFAULT_TIME_FORMAT		:= "+%H:%M:%S"
 
 FILE_PATTERN			:= *.md
 
@@ -45,10 +47,14 @@ PAGE_SIZE				:= 10
 PAGE_AUTHOR				:= $(AUTHOR)
 TEMPLATE				:= $(DEFAULT_TEMPLATE)
 INDEX_TEMPLATE			:= $(DEFAULT_INDEX_TEMPLATE)
+ASIDE_TEMPLATE			:= $(DEFAULT_ASIDE_TEMPLATE)
 ARTICLES_PREFIX			:= /article
 PAGE_PREFIX				:=
 INCLUDE_PAGE_MENU		:= yes
 DATE_FORMAT				:= $(DEFAULT_DATE_FORMAT)
+TIME_FORMAT				:= $(DEFAULT_TIME_FORMAT)
+INCLUDE_ASIDE			:= yes
+INCLUDE_ASIDE_IN_INDEX	:= yes
 
 # Default Makefile.config file location.
 MAKEFILE_CONFIG_FILE	:= $(SITE_CONTENTS_DIR)/Makefile.config
@@ -64,12 +70,13 @@ PAGES					:= $(PAGES_SRCS:$(PAGES_DIR)/%.md=$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html)
 INDEX_ARTICLES			:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
 
 GEN_DATE				:= $(shell date $(DATE_FORMAT))
+GEN_TIME				:= $(shell date $(TIME_FORMAT))
 
 # Pandoc's variables.
 PANDOC_VARS				:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"\
-	--variable gen-date=$(GEN_DATE)
+	--variable gen-date=$(GEN_DATE) --variable gen-time=$(GEN_TIME)
 PANDOC_VARS_INDEX		:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"\
-	--variable gen-date=$(GEN_DATE)
+	--variable gen-date=$(GEN_DATE) --variable gen-time=$(GEN_TIME)
 PANDOC_VARS_PAGES		:=
 PANDOC_VARS_ARTICLES	:=
 
@@ -77,6 +84,15 @@ ifneq ($(INCLUDE_PAGE_MENU),)
 PANDOC_VARS_INDEX		+= --include-before-body $(PAGES_MENU_FILE)
 PANDOC_VARS_PAGES		+= --include-before-body $(PAGES_MENU_FILE)
 PANDOC_VARS_ARTICLES	+= --include-before-body $(PAGES_MENU_FILE)
+endif
+
+ifneq ($(INCLUDE_ASIDE),)
+PANDOC_VARS_PAGES		+= --include-after-body $(ASIDE_TEMPLATE)
+PANDOC_VARS_ARTICLES	+= --include-after-body $(ASIDE_TEMPLATE)
+endif
+
+ifneq ($(INCLUDE_ASIDE_IN_INDEX),)
+PANDOC_VARS_INDEX		+= --include-after-body $(ASIDE_TEMPLATE)
 endif
 
 # Stats.
@@ -90,27 +106,31 @@ all: message check-convert-tool test-dirs static-resources-links $(PAGES) $(ARTI
 
 # Show configuration variables (overridable by Makefile.config).
 config:
-	@echo "SITE_CONTENTS_DIR    = $(SITE_CONTENTS_DIR)"
-	@echo "ARTICLES_DIR         = $(ARTICLES_DIR)"
-	@echo "PAGES_DIR            = $(PAGES_DIR)"
-	@echo "PUBLIC_DIR           = $(PUBLIC_DIR)"
-	@echo "STATIC_RESOURCES_DIR = $(STATIC_RESOURCES_DIR)"
-	@echo "ART_DIR              = $(STATIC_RESOURCES_DIR)/$(ART_DIR)"
-	@echo "STYLES_DIR           = $(STATIC_RESOURCES_DIR)/$(STYLES_DIR)"
-	@echo "SCRIPTS_DIR          = $(STATIC_RESOURCES_DIR)/$(SCRIPTS_DIR)"
-	@echo "TEMPLATE             = $(TEMPLATE)"
-	@echo "INDEX_TEMPLATE       = $(INDEX_TEMPLATE)"
-	@echo "FROM_FORMAT          = $(FROM_FORMAT)"
-	@echo "TO_FORMAT            = $(TO_FORMAT)"
-	@echo "SITE_TITLE           = $(SITE_TITLE)"
-	@echo "SITE_TAG             = $(SITE_TAG)"
-	@echo "PAGE_SIZE            = $(PAGE_SIZE)"
-	@echo 'PAGE_AUTHOR          = $(PAGE_AUTHOR)'
-	@echo 'ARTICLES_PREFIX      = $(ARTICLES_PREFIX)'
-	@echo 'PAGE_PREFIX          = $(PAGE_PREFIX)'
-	@echo "INCLUDE_PAGE_MENU    = $(INCLUDE_PAGE_MENU)"
-	@echo "PAGES_MENU_FILE      = $(PAGES_MENU_FILE)"
-	@echo "DATE_FORMAT          = $(DATE_FORMAT)"
+	@echo "SITE_CONTENTS_DIR      = $(SITE_CONTENTS_DIR)"
+	@echo "ARTICLES_DIR           = $(ARTICLES_DIR)"
+	@echo "PAGES_DIR              = $(PAGES_DIR)"
+	@echo "PUBLIC_DIR             = $(PUBLIC_DIR)"
+	@echo "STATIC_RESOURCES_DIR   = $(STATIC_RESOURCES_DIR)"
+	@echo "ART_DIR                = $(STATIC_RESOURCES_DIR)/$(ART_DIR)"
+	@echo "STYLES_DIR             = $(STATIC_RESOURCES_DIR)/$(STYLES_DIR)"
+	@echo "SCRIPTS_DIR            = $(STATIC_RESOURCES_DIR)/$(SCRIPTS_DIR)"
+	@echo "TEMPLATE               = $(TEMPLATE)"
+	@echo "INDEX_TEMPLATE         = $(INDEX_TEMPLATE)"
+	@echo "ASIDE_TEMPLATE         = $(ASIDE_TEMPLATE)"
+	@echo "FROM_FORMAT            = $(FROM_FORMAT)"
+	@echo "TO_FORMAT              = $(TO_FORMAT)"
+	@echo "SITE_TITLE             = $(SITE_TITLE)"
+	@echo "SITE_TAG               = $(SITE_TAG)"
+	@echo "PAGE_SIZE              = $(PAGE_SIZE)"
+	@echo 'PAGE_AUTHOR            = $(PAGE_AUTHOR)'
+	@echo 'ARTICLES_PREFIX        = $(ARTICLES_PREFIX)'
+	@echo 'PAGE_PREFIX            = $(PAGE_PREFIX)'
+	@echo "INCLUDE_PAGE_MENU      = $(INCLUDE_PAGE_MENU)"
+	@echo "INCLUDE_ASIDE          = $(INCLUDE_ASIDE)"
+	@echo "INCLUDE_ASIDE_IN_INDEX = $(INCLUDE_ASIDE_IN_INDEX)"
+	@echo "PAGES_MENU_FILE        = $(PAGES_MENU_FILE)"
+	@echo "DATE_FORMAT            = $(DATE_FORMAT)"
+	@echo "TIME_FORMAT            = $(TIME_FORMAT)"
 
 # Create site's default directory layout.
 layout:
