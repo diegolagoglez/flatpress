@@ -6,7 +6,7 @@
 
 FlatPress is a really, really simple CMS.
 
-CMS are very complex pieces of software today. They have a database, a template system, a big and great backend… but all that stuff overload the server for really simple sites.
+CMS are very complex pieces of software today. They have a database, a template system, a big and great backend… but all that stuff overload the server for **really simple** sites.
 
 With FlatPress you only have to write the contents of your site with the directory structure you want. After that, run `make` and your site will be generated with the same directory structure, and the server will serve it as static HTML. No database needed or a big backend. Only a text editor.
 
