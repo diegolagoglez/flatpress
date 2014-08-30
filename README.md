@@ -28,7 +28,7 @@ In order to deploy the first time a site built with FlatPress you have to follow
 * Configure the document root of your web server to the `public` directory of your site's directory (for example `DocumentRoot "/var/www/my-flatpress-site/public"`).
 * Create a template in the `templates` directory (or use the default one).
 * Create all your static resources (styles, images and scripts) in the `site/static` directory under the corresponding subdirectories (by default are `art` for images, `styles` for CSS or whatever styles and `scripts` for Javascript).
-* Write the contents in the `site/contents` directory as [Markdown](http://en.wikipedia.org/wiki/Markdown) files. You can optionally use [Pandoc's Markdown](http://johnmacfarlane.net/pandoc/demo/example9/pandocs-markdown.html).
+* Write the contents in the `site/articles` directory for articles/posts and `site/pages` directory for pages as [Markdown](http://en.wikipedia.org/wiki/Markdown) files. You can optionally use [Pandoc's Markdown](http://johnmacfarlane.net/pandoc/demo/example9/pandocs-markdown.html).
 * Run `make` in the FlatPress root directory.
 
 # Usage
@@ -40,9 +40,13 @@ Once the site has been created, you have to do the next scripts to publish conte
 * Done.
 * What else?
 
-# Example
+# Lacks and limitations
 
-Not yet.
+Due to this *is* a CMS without backend and a complex publishing workflow, there are some lacks and limitations I am trying to solve:
+
+* The articles/pages have not yet user and date information. The writer is the responsible to write this information into the Markdown file.
+* Templates are very limited. You have a header, main contents, footer and aside blocks within you HTML. It is a good oportity to be very imaginative with your CSS and Javascript.
+* Although the pages menu is dynamically built, the aside part is still static.
 
 # Credits
 
