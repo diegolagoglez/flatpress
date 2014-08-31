@@ -55,6 +55,7 @@ DATE_FORMAT				:= $(DEFAULT_DATE_FORMAT)
 TIME_FORMAT				:= $(DEFAULT_TIME_FORMAT)
 INCLUDE_ASIDE			:= yes
 INCLUDE_ASIDE_IN_INDEX	:= yes
+INCLUDE_IN_HEADER		:=
 
 # Default Makefile.config file location.
 MAKEFILE_CONFIG_FILE	:= $(SITE_CONTENTS_DIR)/Makefile.config
@@ -79,6 +80,10 @@ PANDOC_VARS_INDEX		:= --variable site-title="$(SITE_TITLE)" --variable site-tag=
 	--variable gen-date=$(GEN_DATE) --variable gen-time=$(GEN_TIME)
 PANDOC_VARS_PAGES		:=
 PANDOC_VARS_ARTICLES	:=
+
+ifneq ($(INCLUDE_IN_HEADER),)
+PANDOC_VARS				+= --include-in-header $(INCLUDE_IN_HEADER)
+endif
 
 ifneq ($(INCLUDE_PAGE_MENU),)
 PANDOC_VARS_INDEX		+= --include-before-body $(PAGES_MENU_FILE)
@@ -128,6 +133,7 @@ config:
 	@echo "INCLUDE_PAGE_MENU      = $(INCLUDE_PAGE_MENU)"
 	@echo "INCLUDE_ASIDE          = $(INCLUDE_ASIDE)"
 	@echo "INCLUDE_ASIDE_IN_INDEX = $(INCLUDE_ASIDE_IN_INDEX)"
+	@echo "INCLUDE_IN_HEADER      = $(INCLUDE_IN_HEADER)"
 	@echo "PAGES_MENU_FILE        = $(PAGES_MENU_FILE)"
 	@echo "DATE_FORMAT            = $(DATE_FORMAT)"
 	@echo "TIME_FORMAT            = $(TIME_FORMAT)"
@@ -202,7 +208,7 @@ $(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) 
 	@echo "  HTML    $@"
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(INDEX_TEMPLATE) --section-divs \
-		$(PANDOC_VARS_INDEX)\
+		$(PANDOC_VARS) $(PANDOC_VARS_INDEX)\
 		--output $@ $(CACHE_DIR)/index.md
 # Replace <section> with <article> in index.html.
 	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
