@@ -27,6 +27,7 @@ DEFAULT_ASIDE_TEMPLATE	:= $(TEMPLATES_DIR)/default-aside.html
 ART_DIR					:= art
 SCRIPTS_DIR				:= scripts
 STYLES_DIR				:= styles
+FONTS_DIR				:= fonts
 DEFAULT_DATE_FORMAT		:= "+%Y-%m-%d"
 DEFAULT_TIME_FORMAT		:= "+%H:%M:%S"
 
@@ -119,6 +120,7 @@ config:
 	@echo "ART_DIR                = $(STATIC_RESOURCES_DIR)/$(ART_DIR)"
 	@echo "STYLES_DIR             = $(STATIC_RESOURCES_DIR)/$(STYLES_DIR)"
 	@echo "SCRIPTS_DIR            = $(STATIC_RESOURCES_DIR)/$(SCRIPTS_DIR)"
+	@echo "FONTS_DIR              = $(STATIC_RESOURCES_DIR)/$(FONTS_DIR)"
 	@echo "TEMPLATE               = $(TEMPLATE)"
 	@echo "INDEX_TEMPLATE         = $(INDEX_TEMPLATE)"
 	@echo "ASIDE_TEMPLATE         = $(ASIDE_TEMPLATE)"
@@ -240,6 +242,8 @@ static-resources-links:
 		ln -s .$(STATIC_RESOURCES_DIR)/$(ART_DIR) $(PUBLIC_DIR)/$(ART_DIR) || true
 	@test ! -L $(PUBLIC_DIR)/$(SCRIPTS_DIR) &&\
 		ln -s .$(STATIC_RESOURCES_DIR)/$(SCRIPTS_DIR) $(PUBLIC_DIR)/$(SCRIPTS_DIR) || true
+	@test ! -L $(PUBLIC_DIR)/$(FONTS_DIR) &&\
+		ln -s .$(STATIC_RESOURCES_DIR)/$(FONTS_DIR) $(PUBLIC_DIR)/$(FONTS_DIR) || true
 
 monthly-archive:
 	@echo "Regenerating monthly archive..."
