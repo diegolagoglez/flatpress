@@ -140,6 +140,22 @@ config:
 	@echo "DATE_FORMAT            = $(DATE_FORMAT)"
 	@echo "TIME_FORMAT            = $(TIME_FORMAT)"
 
+config-all: config
+	@echo
+	@echo "ARTICLES_DIR_TREE    = $(ARTICLES_DIR_TREE)"
+	@echo "ARTICLES_SRCS        = $(ARTICLES_SRCS)"
+	@echo "PAGES_DIR_TREE       = $(PAGES_DIR_TREE)"
+	@echo "PAGES_SRCS           = $(PAGES_SRCS)"
+	@echo "ARTICLES             = $(ARTICLES)"
+	@echo "PAGES                = $(PAGES)"
+	@echo "INDEX_ARTICLES       = $(INDEX_ARTICLES)"
+	@echo "GEN_DATE             = $(GEN_DATE)"
+	@echo "GEN_TIME             = $(GEN_TIME)"
+	@echo "PANDOC_VARS          = $(PANDOC_VARS)"
+	@echo "PANDOC_VARS_INDEX    = $(PANDOC_VARS_INDEX)"
+	@echo "PANDOC_VARS_ARTICLES = $(PANDOC_VARS_ARTICLES)"
+	@echo "PANDOC_VARS_PAGES    = $(PANDOC_VARS_PAGES)"
+
 # Create site's default directory layout.
 layout:
 	@echo -n "Creating basic directory layout for a new site... "
@@ -161,11 +177,12 @@ help:
 	@echo "Usage:"
 	@echo "    make [target]"
 	@echo "Targets:"
-	@echo "      all : Builds the full site and/or update all files (default target)."
-	@echo "    index : Rebuilds the index (index.html)."
-	@echo "   config : Shows the values of the configurable variables."
-	@echo "   layout : Creates the basic directory layout for a new site."
-	@echo "     help : Shows this help."
+	@echo "       all : Builds the full site and/or update all files (default target)."
+	@echo "     index : Rebuilds the index (index.html)."
+	@echo "    config : Shows the values of the configurable variables."
+	@echo "config-all : Shows the values of the configurable variables and generated variables."
+	@echo "    layout : Creates the basic directory layout for a new site."
+	@echo "      help : Shows this help."
 
 # Check directory existence.
 test-dirs:
