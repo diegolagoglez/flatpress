@@ -49,6 +49,7 @@ PAGE_AUTHOR				:= $(AUTHOR)
 TEMPLATE				:= $(DEFAULT_TEMPLATE)
 INDEX_TEMPLATE			:= $(DEFAULT_INDEX_TEMPLATE)
 ASIDE_TEMPLATE			:= $(DEFAULT_ASIDE_TEMPLATE)
+SITE_PREFIX				:=
 ARTICLES_PREFIX			:= /article
 PAGE_PREFIX				:=
 INCLUDE_PAGE_MENU		:= yes
@@ -130,6 +131,7 @@ config:
 	@echo "SITE_TAG               = $(SITE_TAG)"
 	@echo "PAGE_SIZE              = $(PAGE_SIZE)"
 	@echo 'PAGE_AUTHOR            = $(PAGE_AUTHOR)'
+	@echo 'SITE_PREFIX            = $(SITE_PREFIX)'
 	@echo 'ARTICLES_PREFIX        = $(ARTICLES_PREFIX)'
 	@echo 'PAGE_PREFIX            = $(PAGE_PREFIX)'
 	@echo "INCLUDE_PAGE_MENU      = $(INCLUDE_PAGE_MENU)"
