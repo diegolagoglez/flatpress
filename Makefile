@@ -147,12 +147,12 @@ config:
 
 config-all: config
 	@echo
-	@echo "ARTICLES_DIR_TREE    = $(ARTICLES_DIR_TREE)"
-	@echo "ARTICLES_SRCS        = $(ARTICLES_SRCS)"
 	@echo "PAGES_DIR_TREE       = $(PAGES_DIR_TREE)"
 	@echo "PAGES_SRCS           = $(PAGES_SRCS)"
-	@echo "ARTICLES             = $(ARTICLES)"
 	@echo "PAGES                = $(PAGES)"
+	@echo "ARTICLES_DIR_TREE    = $(ARTICLES_DIR_TREE)"
+	@echo "ARTICLES_SRCS        = $(ARTICLES_SRCS)"
+	@echo "ARTICLES             = $(ARTICLES)"
 	@echo "INDEX_ARTICLES       = $(INDEX_ARTICLES)"
 	@echo "GEN_DATE             = $(GEN_DATE)"
 	@echo "GEN_TIME             = $(GEN_TIME)"
