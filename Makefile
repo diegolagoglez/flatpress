@@ -7,12 +7,13 @@ CONVERT_TOOL			:= pandoc
 RM						:= rm -rf
 
 BIN_DIR					:= ./bin
-SITE_CONTENTS_DIR		:= ./site
+SITE_DIR				:= ./site
+SITE_CONTENTS_DIR		:= ./site/contents
 ARTICLES_DIR			:= $(SITE_CONTENTS_DIR)/articles
 PAGES_DIR				:= $(SITE_CONTENTS_DIR)/pages
 PUBLIC_DIR				:= ./public
 TEMPLATES_DIR			:= ./templates
-STATIC_RESOURCES_DIR	:= $(SITE_CONTENTS_DIR)/static
+STATIC_RESOURCES_DIR	:= $(SITE_DIR)/static
 CACHE_DIR				:= ./cache
 PAGES_MENU_SRC_FILE		:= $(CACHE_DIR)/pages-menu.md
 PAGES_MENU_FILE			:= $(CACHE_DIR)/pages-menu.html
@@ -60,7 +61,7 @@ INCLUDE_ASIDE_IN_INDEX	:= yes
 INCLUDE_IN_HEADER		:=
 
 # Default Makefile.config file location.
-MAKEFILE_CONFIG_FILE	:= $(SITE_CONTENTS_DIR)/Makefile.config
+MAKEFILE_CONFIG_FILE	:= $(SITE_DIR)/Makefile.config
 
 # Include custom configuration.
 -include $(MAKEFILE_CONFIG_FILE)
@@ -113,6 +114,7 @@ all: message check-convert-tool test-dirs static-resources-links $(PAGES_MENU_FI
 
 # Show configuration variables (overridable by Makefile.config).
 config:
+	@echo "SITE_DIR               = $(SITE_DIR)"
 	@echo "SITE_CONTENTS_DIR      = $(SITE_CONTENTS_DIR)"
 	@echo "ARTICLES_DIR           = $(ARTICLES_DIR)"
 	@echo "PAGES_DIR              = $(PAGES_DIR)"
@@ -161,7 +163,7 @@ config-all: config
 # Create site's default directory layout.
 layout:
 	@echo -n "Creating basic directory layout for a new site... "
-	@mkdir -p $(SITE_CONTENTS_DIR) $(PAGES_DIR) $(ARTICLES_DIR)\
+	@mkdir -p $(SITE_DIR) $(SITE_CONTENTS_DIR) $(PAGES_DIR) $(ARTICLES_DIR)\
 		$(PUBLIC_DIR) $(CACHE_DIR) $(STATIC_RESOURCES_DIR)\
 		$(STATIC_RESOURCES_DIR)/$(ART_DIR)\
 		$(STATIC_RESOURCES_DIR)/$(STYLES_DIR)\
