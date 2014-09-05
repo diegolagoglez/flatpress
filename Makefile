@@ -15,6 +15,7 @@ PUBLIC_DIR				:= ./public
 TEMPLATES_DIR			:= ./templates
 STATIC_RESOURCES_DIR	:= $(SITE_DIR)/static
 CACHE_DIR				:= ./cache
+STATIC_INDEX			:= $(SITE_CONTENTS_DIR)/index.md
 PAGES_MENU_SRC_FILE		:= $(CACHE_DIR)/pages-menu.md
 PAGES_MENU_FILE			:= $(CACHE_DIR)/pages-menu.html
 
