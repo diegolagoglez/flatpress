@@ -217,9 +217,13 @@ $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(PAGES_MENU_FILE) $(TEMP
 	$(eval url := $(shell echo $@ | sed 's/^public//'))
 	@echo "  PAGE    $(url)"
 	$(eval doctitle := $(shell $(DOCTITLE_TOOL) $<))
+	$(eval filetimestamp := $(shell stat -c %y $< | cut -d'.' -f1))
+	$(eval date := $(shell date -d "$(filetimestamp)" $(DATE_FORMAT)))
+	$(eval time := $(shell date -d "$(filetimestamp)" $(TIME_FORMAT)))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(TEMPLATE) --variable title='$(doctitle)' \
+		--variable date='$(date)' --variable time='$(time)'\
 		$(PANDOC_VARS) $(PANDOC_VARS_PAGES) --output $@ $<
 	$(eval PAGE_COUNT := $(shell expr $(PAGE_COUNT) + 1))
 
