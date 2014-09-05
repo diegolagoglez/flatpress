@@ -191,7 +191,8 @@ help:
 
 # Check directory existence.
 test-dirs:
-	@test -d $(ARTICLES_DIR) || (echo "ERROR: Site contents directory ($(ARTICLES_DIR)) does not exists." && exit 1)
+	@test -d $(SITE_DIR) || (echo "ERROR: Site base directory ($(SITE_DIR)) does not exists." && exit 1)
+	@test -d $(SITE_CONTENTS_DIR) || (echo "ERROR: Site contents directory ($(SITE_CONTENTS_DIR)) does not exists." && exit 1)
 	@test ! -d $(PUBLIC_DIR) && echo "Site generated contents directory ($(PUBLIC_DIR)) does not exist. Creating..." && mkdir -p $(PUBLIC_DIR) || true
 	@test ! -d $(TEMPLATES_DIR) && echo "WARNING: There are not templates." || true
 	@test ! -d $(CACHE_DIR) && echo "WARNING: There are not cache directory." || true
