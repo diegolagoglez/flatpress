@@ -61,6 +61,10 @@ INCLUDE_ASIDE			:= yes
 INCLUDE_ASIDE_IN_INDEX	:= yes
 INCLUDE_IN_HEADER		:=
 
+# If there is an index file (index.md) into site's contents directory, do not
+# generate an index.md and index.html with articles, use a static index page.
+IS_THERE_INDEX			:= $(shell test -f $(SITE_CONTENTS_DIR)/index.md && echo yes)
+
 # Default Makefile.config file location.
 MAKEFILE_CONFIG_FILE	:= $(SITE_DIR)/Makefile.config
 
@@ -107,7 +111,6 @@ endif
 # Stats.
 PAGE_COUNT		:= 0
 ARTICLE_COUNT	:= 0
-
 
 .PHONY: all message help test-dirs check-convert-tool config layout
 
@@ -233,8 +236,13 @@ $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(PAGES_MENU_FILE) $(TEMP
 
 # Index generation (markdown; cached).
 $(CACHE_DIR)/index.md: $(INDEX_ARTICLES)
+ifeq ($(IS_THERE_INDEX),)
 	@echo "  GEN     $@"
 	@$(DOCTITLE_TOOL) -p $(ARTICLES_PREFIX) -b -f -a $(ARTICLES_DIR) $(INDEX_ARTICLES) > $@
+else
+	@echo "  LINK    .$(SITE_CONTENTS_DIR)/index.md -> $@"
+	@ln -s .$(SITE_CONTENTS_DIR)/index.md $@
+endif
 
 # Public index generation.
 $(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) $(PAGES_MENU_FILE)
