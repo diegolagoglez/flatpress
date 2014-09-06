@@ -63,7 +63,7 @@ INCLUDE_IN_HEADER		:=
 
 # If there is an index file (index.md) into site's contents directory, do not
 # generate an index.md and index.html with articles, use a static index page.
-IS_THERE_INDEX			:= $(shell test -f $(SITE_CONTENTS_DIR)/index.md && echo yes)
+IS_THERE_INDEX			:= $(shell test -f $(STATIC_INDEX) && echo yes)
 
 # Default Makefile.config file location.
 MAKEFILE_CONFIG_FILE	:= $(SITE_DIR)/Makefile.config
@@ -240,8 +240,8 @@ ifeq ($(IS_THERE_INDEX),)
 	@echo "  GEN     $@"
 	@$(DOCTITLE_TOOL) -p $(ARTICLES_PREFIX) -b -f -a $(ARTICLES_DIR) $(INDEX_ARTICLES) > $@
 else
-	@echo "  LINK    .$(SITE_CONTENTS_DIR)/index.md -> $@"
-	@ln -s .$(SITE_CONTENTS_DIR)/index.md $@
+	@echo "  LINK    .$(STATIC_INDEX) -> $@"
+	@ln -s .$(STATIC_INDEX) $@
 endif
 
 # Public index generation.
