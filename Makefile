@@ -144,6 +144,7 @@ config:
 	@echo "FONTS_DIR              = $(STATIC_RESOURCES_DIR)/$(FONTS_DIR)"
 	@echo "TEMPLATE               = $(TEMPLATE)"
 	@echo "INDEX_TEMPLATE         = $(INDEX_TEMPLATE)"
+	@echo "ASIDE_EXISTS           = $(ASIDE_EXISTS)"
 	@echo "ASIDE_TEMPLATE         = $(ASIDE_TEMPLATE)"
 	@echo "ASIDE_FILE             = $(ASIDE_FILE)"
 	@echo "FROM_FORMAT            = $(FROM_FORMAT)"
@@ -271,12 +272,8 @@ $(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) 
 	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
 
 $(CACHE_DIR)/aside.md: $(ASIDE_SRCS)
-ifeq ($(ASIDE_EXISTS),yes)
 	@echo "  GEN     $@"
 	@cat $(ASIDE_SRCS) > $@
-else
-	@echo "WARNING: Cannot generate aside information. Aside directory ($(ASIDE_DIR)) does not exist."
-endif
 
 $(ASIDE_FILE): $(CACHE_DIR)/aside.md
 	@echo "  HTML    $@"
