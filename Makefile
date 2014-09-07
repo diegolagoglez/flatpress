@@ -259,6 +259,19 @@ $(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) 
 # Replace <section> with <article> in index.html.
 	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
 
+$(CACHE_DIR)/aside.md: $(ASIDE_SRCS)
+ifeq ($(ASIDE_EXISTS),yes)
+	@echo "  GEN     $@"
+	@cat $(ASIDE_SRCS) > $@
+else
+	@echo "WARNING: Cannot generate aside information. Aside directory ($(ASIDE_DIR)) does not exist."
+endif
+
+$(CACHE_DIR)/aside.html: $(CACHE_DIR)/aside.md
+	@echo "  HTML    $@"
+	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT)\
+		--template $(ASIDE_TEMPLATE) --output $@ $<
+
 .PHONY: index static-resources-links monthly-archive categories tags
 
 # Alias for public/index.html
