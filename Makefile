@@ -103,13 +103,17 @@ PANDOC_VARS_PAGES		+= --include-before-body $(PAGES_MENU_FILE)
 PANDOC_VARS_ARTICLES	+= --include-before-body $(PAGES_MENU_FILE)
 endif
 
-ifneq ($(INCLUDE_ASIDE),)
-PANDOC_VARS_PAGES		+= --include-after-body $(ASIDE_TEMPLATE)
-PANDOC_VARS_ARTICLES	+= --include-after-body $(ASIDE_TEMPLATE)
+ifeq ($(INCLUDE_ASIDE),yes)
+ifeq ($(ASIDE_EXISTS),yes)
+PANDOC_VARS_PAGES		+= --include-after-body $(ASIDE_FILE)
+PANDOC_VARS_ARTICLES	+= --include-after-body $(ASIDE_FILE)
+endif
 endif
 
-ifneq ($(INCLUDE_ASIDE_IN_INDEX),)
-PANDOC_VARS_INDEX		+= --include-after-body $(ASIDE_TEMPLATE)
+ifeq ($(INCLUDE_ASIDE_IN_INDEX),yes)
+ifeq ($(ASIDE_EXISTS),yes)
+PANDOC_VARS_INDEX		+= --include-after-body $(ASIDE_FILE)
+endif
 endif
 
 # Stats.
