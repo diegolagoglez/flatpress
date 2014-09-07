@@ -43,7 +43,13 @@ PAGES_DIR_TREE			:= $(shell find $(PAGES_DIR) -type d 2>/dev/null)
 PAGES_SRCS				:= $(foreach dir, $(PAGES_DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
 
 ASIDE_EXISTS			:= $(shell test -d $(ASIDE_DIR) && echo yes)
+ifeq ($(ASIDE_EXISTS),yes)
 ASIDE_SRCS				:= $(shell find $(ASIDE_DIR) -type f 2>/dev/null | sort)
+ASIDE_FILE				:= $(CACHE_DIR)/aside.html
+else
+ASIDE_SRCS				:=
+ASIDE_FILE				:=
+endif
 
 # Configuration overridable variables:
 FROM_FORMAT				:= markdown
@@ -139,6 +145,7 @@ config:
 	@echo "TEMPLATE               = $(TEMPLATE)"
 	@echo "INDEX_TEMPLATE         = $(INDEX_TEMPLATE)"
 	@echo "ASIDE_TEMPLATE         = $(ASIDE_TEMPLATE)"
+	@echo "ASIDE_FILE             = $(ASIDE_FILE)"
 	@echo "FROM_FORMAT            = $(FROM_FORMAT)"
 	@echo "TO_FORMAT              = $(TO_FORMAT)"
 	@echo "SITE_TITLE             = $(SITE_TITLE)"
@@ -214,7 +221,7 @@ check-convert-tool:
 	@which $(CONVERT_TOOL) >/dev/null 2>&1 || (echo "ERROR: '$(CONVERT_TOOL)' tool must be installed." && exit 1)
 
 # Articles generation.
-$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(PAGES_MENU_FILE) $(TEMPLATE)
+$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(PAGES_MENU_FILE) $(TEMPLATE) $(ASIDE_FILE)
 	$(eval url := $(shell echo $@ | sed 's/^public//'))
 	@echo "  ARTICLE $(url)"
 	$(eval doctitle := $(shell $(DOCTITLE_TOOL) $<))
@@ -229,7 +236,7 @@ $(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(PAGES_MENU_FILE) 
 	$(eval ARTICLE_COUNT := $(shell expr $(ARTICLE_COUNT) + 1))
 
 # Pages generation.
-$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(PAGES_MENU_FILE) $(TEMPLATE)
+$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(PAGES_MENU_FILE) $(TEMPLATE) $(ASIDE_FILE)
 	$(eval url := $(shell echo $@ | sed 's/^public//'))
 	@echo "  PAGE    $(url)"
 	$(eval doctitle := $(shell $(DOCTITLE_TOOL) $<))
@@ -254,7 +261,7 @@ else
 endif
 
 # Public index generation.
-$(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) $(PAGES_MENU_FILE)
+$(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) $(PAGES_MENU_FILE) $(ASIDE_FILE)
 	@echo "  HTML    $@"
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(INDEX_TEMPLATE) --section-divs \
@@ -271,7 +278,7 @@ else
 	@echo "WARNING: Cannot generate aside information. Aside directory ($(ASIDE_DIR)) does not exist."
 endif
 
-$(CACHE_DIR)/aside.html: $(CACHE_DIR)/aside.md
+$(ASIDE_FILE): $(CACHE_DIR)/aside.md
 	@echo "  HTML    $@"
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT)\
 		--template $(ASIDE_TEMPLATE) --output $@ $<
