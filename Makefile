@@ -80,7 +80,7 @@ ARTICLES				:= $(ARTICLES_SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)$(ARTICLES_PREF
 PAGES					:= $(PAGES_SRCS:$(PAGES_DIR)/%.md=$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html)
 
 # Find files for the index.
-INDEX_ARTICLES			:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0  2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
+INDEX_ARTICLES			:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0 2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
 
 GEN_DATE				:= $(shell date $(DATE_FORMAT))
 GEN_TIME				:= $(shell date $(TIME_FORMAT))
@@ -160,6 +160,7 @@ config-all: config
 	@echo "ARTICLES_DIR_TREE    = $(ARTICLES_DIR_TREE)"
 	@echo "ARTICLES_SRCS        = $(ARTICLES_SRCS)"
 	@echo "ARTICLES             = $(ARTICLES)"
+	@echo "ASIDE_SRCS           = $(ASIDE_SRCS)"
 	@echo "INDEX_ARTICLES       = $(INDEX_ARTICLES)"
 	@echo "GEN_DATE             = $(GEN_DATE)"
 	@echo "GEN_TIME             = $(GEN_TIME)"
