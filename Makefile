@@ -11,6 +11,7 @@ SITE_DIR				:= ./site
 SITE_CONTENTS_DIR		:= ./site/contents
 ARTICLES_DIR			:= $(SITE_CONTENTS_DIR)/articles
 PAGES_DIR				:= $(SITE_CONTENTS_DIR)/pages
+ASIDE_DIR				:= $(SITE_CONTENTS_DIR)/aside
 PUBLIC_DIR				:= ./public
 TEMPLATES_DIR			:= ./templates
 STATIC_RESOURCES_DIR	:= $(SITE_DIR)/static
@@ -40,6 +41,9 @@ ARTICLES_SRCS			:= $(foreach dir, $(ARTICLES_DIR_TREE), $(wildcard $(dir)/$(FILE
 
 PAGES_DIR_TREE			:= $(shell find $(PAGES_DIR) -type d 2>/dev/null)
 PAGES_SRCS				:= $(foreach dir, $(PAGES_DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
+
+ASIDE_EXISTS			:= $(shell test -d $(ASIDE_DIR) && echo yes)
+ASIDE_SRCS				:= $(shell find $(ASIDE_DIR) -type f 2>/dev/null | sort)
 
 # Configuration overridable variables:
 FROM_FORMAT				:= markdown
