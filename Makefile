@@ -1,103 +1,103 @@
 
-PROJECT					:= "FlatPress"
-AUTHOR					:= "Diego Lago Gonzalez <diego.lago.gonzalez@gmail.com>"
-VERSION					:= "0.1"
+PROJECT					= "FlatPress"
+AUTHOR					= "Diego Lago Gonzalez <diego.lago.gonzalez@gmail.com>"
+VERSION					= "0.1"
 
-CONVERT_TOOL			:= pandoc
-RM						:= rm -rf
+CONVERT_TOOL			= pandoc
+RM						= rm -rf
 
-BIN_DIR					:= ./bin
-SITE_DIR				:= ./site
-SITE_CONTENTS_DIR		:= ./site/contents
-ARTICLES_DIR			:= $(SITE_CONTENTS_DIR)/articles
-PAGES_DIR				:= $(SITE_CONTENTS_DIR)/pages
-ASIDE_DIR				:= $(SITE_CONTENTS_DIR)/aside
-PUBLIC_DIR				:= ./public
-TEMPLATES_DIR			:= ./templates
-STATIC_RESOURCES_DIR	:= $(SITE_DIR)/static
-CACHE_DIR				:= ./cache
-STATIC_INDEX			:= $(SITE_CONTENTS_DIR)/index.md
-PAGES_MENU_SRC_FILE		:= $(CACHE_DIR)/pages-menu.md
-PAGES_MENU_FILE			:= $(CACHE_DIR)/pages-menu.html
+BIN_DIR					= ./bin
+SITE_DIR				= ./site
+SITE_CONTENTS_DIR		= ./site/contents
+ARTICLES_DIR			= $(SITE_CONTENTS_DIR)/articles
+PAGES_DIR				= $(SITE_CONTENTS_DIR)/pages
+ASIDE_DIR				= $(SITE_CONTENTS_DIR)/aside
+PUBLIC_DIR				= ./public
+TEMPLATES_DIR			= ./templates
+STATIC_RESOURCES_DIR	= $(SITE_DIR)/static
+CACHE_DIR				= ./cache
+STATIC_INDEX			= $(SITE_CONTENTS_DIR)/index.md
+PAGES_MENU_SRC_FILE		= $(CACHE_DIR)/pages-menu.md
+PAGES_MENU_FILE			= $(CACHE_DIR)/pages-menu.html
 
-DOCTITLE_TOOL			:= $(BIN_DIR)/doctitle
-DIRTREE_TOOL			:= $(BIN_DIR)/dirtree2md
-TAGWRAPPER_TOOL			:= $(BIN_DIR)/tagwrapper
+DOCTITLE_TOOL			= $(BIN_DIR)/doctitle
+DIRTREE_TOOL			= $(BIN_DIR)/dirtree2md
+TAGWRAPPER_TOOL			= $(BIN_DIR)/tagwrapper
 
-DEFAULT_TEMPLATE		:= $(TEMPLATES_DIR)/default.html
-DEFAULT_INDEX_TEMPLATE	:= $(TEMPLATES_DIR)/default-index.html
-DEFAULT_ASIDE_TEMPLATE	:= $(TEMPLATES_DIR)/default-aside.html
-ART_DIR					:= art
-SCRIPTS_DIR				:= scripts
-STYLES_DIR				:= styles
-FONTS_DIR				:= fonts
-DEFAULT_DATE_FORMAT		:= "+%Y-%m-%d"
-DEFAULT_TIME_FORMAT		:= "+%H:%M:%S"
+DEFAULT_TEMPLATE		= $(TEMPLATES_DIR)/default.html
+DEFAULT_INDEX_TEMPLATE	= $(TEMPLATES_DIR)/default-index.html
+DEFAULT_ASIDE_TEMPLATE	= $(TEMPLATES_DIR)/default-aside.html
+ART_DIR					= art
+SCRIPTS_DIR				= scripts
+STYLES_DIR				= styles
+FONTS_DIR				= fonts
+DEFAULT_DATE_FORMAT		= "+%Y-%m-%d"
+DEFAULT_TIME_FORMAT		= "+%H:%M:%S"
 
-FILE_PATTERN			:= *.md
+FILE_PATTERN			= *.md
 
-ARTICLES_DIR_TREE		:= $(shell find $(ARTICLES_DIR) -type d 2>/dev/null)
-ARTICLES_SRCS			:= $(foreach dir, $(ARTICLES_DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
+ARTICLES_DIR_TREE		= $(shell find $(ARTICLES_DIR) -type d 2>/dev/null)
+ARTICLES_SRCS			= $(foreach dir, $(ARTICLES_DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
 
-PAGES_DIR_TREE			:= $(shell find $(PAGES_DIR) -type d 2>/dev/null)
-PAGES_SRCS				:= $(foreach dir, $(PAGES_DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
+PAGES_DIR_TREE			= $(shell find $(PAGES_DIR) -type d 2>/dev/null)
+PAGES_SRCS				= $(foreach dir, $(PAGES_DIR_TREE), $(wildcard $(dir)/$(FILE_PATTERN)))
 
-ASIDE_EXISTS			:= $(shell test -d $(ASIDE_DIR) && echo yes)
+ASIDE_EXISTS			= $(shell test -d $(ASIDE_DIR) && echo yes)
 ifeq ($(ASIDE_EXISTS),yes)
-ASIDE_SRCS				:= $(shell find $(ASIDE_DIR) -type f 2>/dev/null | sort)
-ASIDE_FILE				:= $(CACHE_DIR)/aside.html
+ASIDE_SRCS				= $(shell find $(ASIDE_DIR) -type f 2>/dev/null | sort)
+ASIDE_FILE				= $(CACHE_DIR)/aside.html
 else
-ASIDE_SRCS				:=
-ASIDE_FILE				:=
+ASIDE_SRCS				=
+ASIDE_FILE				=
 endif
 
 # Configuration overridable variables:
-FROM_FORMAT				:= markdown
-TO_FORMAT				:= html5
-SITE_TITLE				:= Your site's title
-SITE_TAG				:= Your site's tag
-PAGE_SIZE				:= 10
-PAGE_AUTHOR				:= $(AUTHOR)
-TEMPLATE				:= $(DEFAULT_TEMPLATE)
-INDEX_TEMPLATE			:= $(DEFAULT_INDEX_TEMPLATE)
-ASIDE_TEMPLATE			:= $(DEFAULT_ASIDE_TEMPLATE)
-SITE_PREFIX				:=
-ARTICLES_PREFIX			:= /article
-PAGE_PREFIX				:=
-INCLUDE_PAGE_MENU		:= yes
-DATE_FORMAT				:= $(DEFAULT_DATE_FORMAT)
-TIME_FORMAT				:= $(DEFAULT_TIME_FORMAT)
-INCLUDE_ASIDE			:= yes
-INCLUDE_ASIDE_IN_INDEX	:= yes
-INCLUDE_IN_HEADER		:=
+FROM_FORMAT				= markdown
+TO_FORMAT				= html5
+SITE_TITLE				= Your site's title
+SITE_TAG				= Your site's tag
+PAGE_SIZE				= 10
+PAGE_AUTHOR				= $(AUTHOR)
+TEMPLATE				= $(DEFAULT_TEMPLATE)
+INDEX_TEMPLATE			= $(DEFAULT_INDEX_TEMPLATE)
+ASIDE_TEMPLATE			= $(DEFAULT_ASIDE_TEMPLATE)
+SITE_PREFIX				=
+ARTICLES_PREFIX			= /article
+PAGE_PREFIX				=
+INCLUDE_PAGE_MENU		= yes
+DATE_FORMAT				= $(DEFAULT_DATE_FORMAT)
+TIME_FORMAT				= $(DEFAULT_TIME_FORMAT)
+INCLUDE_ASIDE			= yes
+INCLUDE_ASIDE_IN_INDEX	= yes
+INCLUDE_IN_HEADER		=
 
 # If there is an index file (index.md) into site's contents directory, do not
 # generate an index.md and index.html with articles, use a static index page.
-IS_THERE_INDEX			:= $(shell test -f $(STATIC_INDEX) && echo yes)
+IS_THERE_INDEX			= $(shell test -f $(STATIC_INDEX) && echo yes)
 
 # Default Makefile.config file location.
-MAKEFILE_CONFIG_FILE	:= $(SITE_DIR)/Makefile.config
+MAKEFILE_CONFIG_FILE	= $(SITE_DIR)/Makefile.config
 
 # Include custom configuration.
 -include $(MAKEFILE_CONFIG_FILE)
 
 # The articles with their prefix (if there is one).
-ARTICLES				:= $(ARTICLES_SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html)
-PAGES					:= $(PAGES_SRCS:$(PAGES_DIR)/%.md=$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html)
+ARTICLES				= $(ARTICLES_SRCS:$(ARTICLES_DIR)/%.md=$(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html)
+PAGES					= $(PAGES_SRCS:$(PAGES_DIR)/%.md=$(PUBLIC_DIR)$(PAGES_PREFIX)/%.html)
 
 # Find files for the index.
-INDEX_ARTICLES			:= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0 2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
+INDEX_ARTICLES			= $(shell find $(ARTICLES_DIR) -type f -name '$(FILE_PATTERN)' -print0 2>/dev/null | xargs -0 ls -t | head -n $(PAGE_SIZE))
 
-GEN_DATE				:= $(shell date $(DATE_FORMAT))
-GEN_TIME				:= $(shell date $(TIME_FORMAT))
+GEN_DATE				= $(shell date $(DATE_FORMAT))
+GEN_TIME				= $(shell date $(TIME_FORMAT))
 
 # Pandoc's variables.
-PANDOC_VARS				:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"\
+PANDOC_VARS				= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"\
 	--variable gen-date=$(GEN_DATE) --variable gen-time=$(GEN_TIME)
-PANDOC_VARS_INDEX		:= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"\
+PANDOC_VARS_INDEX		= --variable site-title="$(SITE_TITLE)" --variable site-tag="$(SITE_TAG)"\
 	--variable gen-date=$(GEN_DATE) --variable gen-time=$(GEN_TIME)
-PANDOC_VARS_PAGES		:=
-PANDOC_VARS_ARTICLES	:=
+PANDOC_VARS_PAGES		=
+PANDOC_VARS_ARTICLES	=
 
 ifneq ($(INCLUDE_IN_HEADER),)
 PANDOC_VARS				+= --include-in-header $(INCLUDE_IN_HEADER)
@@ -123,8 +123,8 @@ endif
 endif
 
 # Stats.
-PAGE_COUNT		:= 0
-ARTICLE_COUNT	:= 0
+PAGE_COUNT		= 0
+ARTICLE_COUNT	= 0
 
 .PHONY: all message help test-dirs check-convert-tool config layout
 
@@ -223,33 +223,33 @@ check-convert-tool:
 
 # Articles generation.
 $(PUBLIC_DIR)$(ARTICLES_PREFIX)/%.html: $(ARTICLES_DIR)/%.md $(PAGES_MENU_FILE) $(TEMPLATE) $(ASIDE_FILE)
-	$(eval url := $(shell echo $@ | sed 's/^public//'))
+	$(eval url = $(shell echo $@ | sed 's/^public//'))
 	@echo "  ARTICLE $(url)"
-	$(eval doctitle := $(shell $(DOCTITLE_TOOL) $<))
-	$(eval filetimestamp := $(shell stat -c %y $< | cut -d'.' -f1))
-	$(eval date := $(shell date -d "$(filetimestamp)" $(DATE_FORMAT)))
-	$(eval time := $(shell date -d "$(filetimestamp)" $(TIME_FORMAT)))
+	$(eval doctitle = $(shell $(DOCTITLE_TOOL) $<))
+	$(eval filetimestamp = $(shell stat -c %y $< | cut -d'.' -f1))
+	$(eval date = $(shell date -d "$(filetimestamp)" $(DATE_FORMAT)))
+	$(eval time = $(shell date -d "$(filetimestamp)" $(TIME_FORMAT)))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(TEMPLATE) --variable title='$(doctitle)' \
 		--variable date='$(date)' --variable time='$(time)'\
 		$(PANDOC_VARS) $(PANDOC_VARS_ARTICLES) --output $@ $<
-	$(eval ARTICLE_COUNT := $(shell expr $(ARTICLE_COUNT) + 1))
+	$(eval ARTICLE_COUNT = $(shell expr $(ARTICLE_COUNT) + 1))
 
 # Pages generation.
 $(PUBLIC_DIR)$(PAGES_PREFIX)/%.html: $(PAGES_DIR)/%.md $(PAGES_MENU_FILE) $(TEMPLATE) $(ASIDE_FILE)
-	$(eval url := $(shell echo $@ | sed 's/^public//'))
+	$(eval url = $(shell echo $@ | sed 's/^public//'))
 	@echo "  PAGE    $(url)"
-	$(eval doctitle := $(shell $(DOCTITLE_TOOL) $<))
-	$(eval filetimestamp := $(shell stat -c %y $< | cut -d'.' -f1))
-	$(eval date := $(shell date -d "$(filetimestamp)" $(DATE_FORMAT)))
-	$(eval time := $(shell date -d "$(filetimestamp)" $(TIME_FORMAT)))
+	$(eval doctitle = $(shell $(DOCTITLE_TOOL) $<))
+	$(eval filetimestamp = $(shell stat -c %y $< | cut -d'.' -f1))
+	$(eval date = $(shell date -d "$(filetimestamp)" $(DATE_FORMAT)))
+	$(eval time = $(shell date -d "$(filetimestamp)" $(TIME_FORMAT)))
 	@mkdir -p $(dir $@)
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT) --standalone \
 		--template $(TEMPLATE) --variable title='$(doctitle)' \
 		--variable date='$(date)' --variable time='$(time)'\
 		$(PANDOC_VARS) $(PANDOC_VARS_PAGES) --output $@ $<
-	$(eval PAGE_COUNT := $(shell expr $(PAGE_COUNT) + 1))
+	$(eval PAGE_COUNT = $(shell expr $(PAGE_COUNT) + 1))
 
 # Index generation (markdown; cached).
 $(CACHE_DIR)/index.md: $(INDEX_ARTICLES)
