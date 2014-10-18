@@ -123,10 +123,11 @@ endif
 endif
 
 # Stats.
-PAGE_COUNT		= 0
-ARTICLE_COUNT	= 0
+PAGE_COUNT			= 0
+ARTICLE_COUNT		= 0
+PAGE_FILE_PREFIX	= page-
 
-SHELL			= /bin/bash
+SHELL				= /bin/bash
 
 .PHONY: all message help test-dirs check-convert-tool config layout
 
@@ -279,7 +280,7 @@ pages: $(ARTICLES_SRCS)
 	@echo $(ARTICLES) | xargs -n $(PAGE_SIZE) echo |\
 		while read -r REPLY; do\
 			let 'count+=1';\
-			file=page-$$count.html;\
+			file=$(PAGE_FILE_PREFIX)$$count.html;\
 			echo "  GEN     $$file";\
 		done
 
