@@ -126,6 +126,8 @@ endif
 PAGE_COUNT		= 0
 ARTICLE_COUNT	= 0
 
+SHELL			= /bin/bash
+
 .PHONY: all message help test-dirs check-convert-tool config layout
 
 all: message check-convert-tool test-dirs static-resources-links $(PAGES_MENU_FILE) $(PUBLIC_DIR)/index.html $(PAGES) $(ARTICLES) stats
