@@ -285,7 +285,7 @@ $(ASIDE_FILE): $(CACHE_DIR)/aside.md
 # Alias for public/index.html
 index: $(PUBLIC_DIR)/index.html
 
-# Pages menu geneartion (markdown; cached).
+# Pages menu generation (markdown; cached).
 $(PAGES_MENU_SRC_FILE): $(PAGES_SRCS)
 ifneq ($(INCLUDE_PAGE_MENU),)
 	@echo "  GEN     $@"
