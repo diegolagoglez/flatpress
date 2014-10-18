@@ -273,6 +273,16 @@ $(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) 
 # Replace <section> with <article> in index.html.
 	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
 
+# Blog pages generation.
+pages: $(ARTICLES_SRCS)
+	@count=1
+	@echo $(ARTICLES) | xargs -n $(PAGE_SIZE) echo |\
+		while read -r REPLY; do\
+			let 'count+=1';\
+			file=page-$$count.html;\
+			echo "  GEN     $$file";\
+		done
+
 $(CACHE_DIR)/aside.md: $(ASIDE_SRCS)
 	@echo "  GEN     $@"
 	@cat $(ASIDE_SRCS) > $@
