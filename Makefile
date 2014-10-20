@@ -19,6 +19,7 @@ CACHE_DIR				= ./cache
 STATIC_INDEX			= $(SITE_CONTENTS_DIR)/index.md
 PAGES_MENU_SRC_FILE		= $(CACHE_DIR)/pages-menu.md
 PAGES_MENU_FILE			= $(CACHE_DIR)/pages-menu.html
+PAGER_FILE				= $(CACHE_DIR)/pager.html
 
 DOCTITLE_TOOL			= $(BIN_DIR)/doctitle
 DIRTREE_TOOL			= $(BIN_DIR)/dirtree2md
@@ -274,8 +275,18 @@ $(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) 
 # Replace <section> with <article> in index.html.
 	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
 
+$(PAGER_FILE):
+	@echo "  GEN     $@"
+	$(eval total = $(shell echo $(ARTICLES) | xargs -n $(PAGE_SIZE) | wc -l))
+	@echo "<ul class=\"pager\">" > $@
+	@echo "<li><a href=\"/index.html\">$$i</a></li>" >> $@
+	@for i in $$(seq 1 $(total)); do\
+		echo "<li><a href=\"/page-$$i.html\">$$i</a></li>" >> $@;\
+	done
+	@echo "</ul>" >> $@
+
 # Blog pages generation.
-pages: $(ARTICLES_SRCS)
+pages: $(ARTICLES_SRCS) $(PAGER_FILE)
 	@count=1
 	@echo $(ARTICLES) | xargs -n $(PAGE_SIZE) echo |\
 		while read -r REPLY; do\
