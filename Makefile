@@ -357,11 +357,11 @@ stats:
 	@echo "  STATS   $(PAGE_COUNT) pages, $(ARTICLE_COUNT) articles"
 
 clean-public:
-	@echo "  CLEAN $(PUBLIC_DIR)"
+	@echo "  CLEAN   $(PUBLIC_DIR)"
 	@$(RM) $(PUBLIC_DIR)/*
 
 clean-cache:
-	@echo "  CLEAN $(CACHE_DIR)"
+	@echo "  CLEAN   $(CACHE_DIR)"
 	@$(RM) $(CACHE_DIR)/*
 
 # Clean (remove public and cache directory contents).
