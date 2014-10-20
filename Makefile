@@ -275,6 +275,7 @@ $(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) 
 # Replace <section> with <article> in index.html.
 	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
 
+# Pager generation (a list with links to pages).
 $(PAGER_FILE):
 	@echo "  GEN     $@"
 	$(eval total = $(shell echo $(ARTICLES) | xargs -n $(PAGE_SIZE) | wc -l))
@@ -295,10 +296,15 @@ pages: $(ARTICLES_SRCS) $(PAGER_FILE)
 			echo "  GEN     $$file";\
 		done
 
+$(PUBLIC_DIR)/page-%.html: $(CACHE_DIR)/page-%.md
+	@echo "  HTML    $@"
+
+# Aside data generation (from files).
 $(CACHE_DIR)/aside.md: $(ASIDE_SRCS)
 	@echo "  GEN     $@"
 	@cat $(ASIDE_SRCS) > $@
 
+# Aside files generation (if any).
 $(ASIDE_FILE): $(CACHE_DIR)/aside.md
 	@echo "  HTML    $@"
 	@$(CONVERT_TOOL) --from=$(FROM_FORMAT) --to=$(TO_FORMAT)\
