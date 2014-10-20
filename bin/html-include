@@ -1,0 +1,16 @@
+#!/bin/bash
+
+source bin/flatpress-common
+
+function usage() {
+	echo "$(basename $0) - Utility to include html file contents into html files - FlatPress Utility."
+	echo "Usage: $(basename $0) [options]"
+	echo "Options:"
+}
+
+function main() {
+	while getopts "" opt; do
+	done
+}
+
+main $@
