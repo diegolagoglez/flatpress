@@ -289,11 +289,12 @@ $(PAGER_FILE):
 # Blog pages generation.
 pages: $(ARTICLES_SRCS) $(PAGER_FILE)
 	@count=1
-	@echo $(ARTICLES) | xargs -n $(PAGE_SIZE) echo |\
+	@echo $(ARTICLES_SRCS) | xargs -n $(PAGE_SIZE) echo |\
 		while read -r REPLY; do\
 			let 'count+=1';\
-			file=$(PAGE_FILE_PREFIX)$$count.html;\
+			file=$(PAGE_FILE_PREFIX)$$count.md;\
 			echo "  GEN     $$file";\
+			$(DOCTITLE_TOOL) -p $(ARTICLES_PREFIX) -b -f -a $(ARTICLES_DIR) $$REPLY >> $(CACHE_DIR)/$$file;\
 		done
 
 $(PUBLIC_DIR)/page-%.html: $(CACHE_DIR)/page-%.md
