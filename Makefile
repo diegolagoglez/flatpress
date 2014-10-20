@@ -19,7 +19,8 @@ CACHE_DIR				= ./cache
 STATIC_INDEX			= $(SITE_CONTENTS_DIR)/index.md
 PAGES_MENU_SRC_FILE		= $(CACHE_DIR)/pages-menu.md
 PAGES_MENU_FILE			= $(CACHE_DIR)/pages-menu.html
-PAGER_FILE				= $(CACHE_DIR)/pager.html
+BLOG_PAGES_SRCS				= 
+BLOG_PAGER_FILE				= $(CACHE_DIR)/pager.html
 
 DOCTITLE_TOOL			= $(BIN_DIR)/doctitle
 DIRTREE_TOOL			= $(BIN_DIR)/dirtree2md
@@ -276,18 +277,19 @@ $(PUBLIC_DIR)/index.html: $(CACHE_DIR)/index.md $(PAGES_SRCS) $(INDEX_TEMPLATE) 
 	@sed -re 's/<section(.*)>/<article\1>/g' -e 's/<\/section>/<\/article>/g' -i $@
 
 # Pager generation (a list with links to pages).
-$(PAGER_FILE):
+$(BLOG_PAGER_FILE):
 	@echo "  GEN     $@"
 	$(eval total = $(shell echo $(ARTICLES) | xargs -n $(PAGE_SIZE) | wc -l))
 	@echo "<ul class=\"pager\">" > $@
 	@echo "<li><a href=\"/index.html\">$$i</a></li>" >> $@
-	@for i in $$(seq 1 $(total)); do\
+	$(eval BLOG_PAGES_SRCS += $(shell for i in $$(seq 1 $(total)); do\
+		echo page-$$i.md;\
 		echo "<li><a href=\"/page-$$i.html\">$$i</a></li>" >> $@;\
-	done
+	done))
 	@echo "</ul>" >> $@
 
 # Blog pages generation.
-pages: $(ARTICLES_SRCS) $(PAGER_FILE)
+$(BLOG_PAGES_SRCS): $(ARTICLES_SRCS) $(BLOG_PAGER_FILE)
 	@count=1
 	@echo $(ARTICLES_SRCS) | xargs -n $(PAGE_SIZE) echo |\
 		while read -r REPLY; do\
@@ -296,6 +298,9 @@ pages: $(ARTICLES_SRCS) $(PAGER_FILE)
 			echo "  GEN     $$file";\
 			$(DOCTITLE_TOOL) -p $(ARTICLES_PREFIX) -b -f -a $(ARTICLES_DIR) $$REPLY >> $(CACHE_DIR)/$$file;\
 		done
+
+pages: $(BLOG_PAGER_FILE) $(BLOG_PAGES_SRCS)
+	@echo $(BLOG_PAGES_SRCS)
 
 $(PUBLIC_DIR)/page-%.html: $(CACHE_DIR)/page-%.md
 	@echo "  HTML    $@"
